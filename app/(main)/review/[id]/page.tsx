@@ -1,42 +1,99 @@
 import { api } from "@/lib/api";
 import { Badge } from "@/components/Badge";
 import { PatientPicker } from "@/components/PatientPicker";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 import { confirmAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function ReviewDetail({ params }: { params: Promise<{ id: string }> }) {
+export default async function ReviewDetail({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const doc = await api.getReview(id);
   const confirm = confirmAction.bind(null, doc.id);
+
+  const extracted = doc.extracted as Record<string, string> | null;
+
   return (
     <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <div>
-        <a className="text-blue-600 underline" href="/">← Back to queue</a>
-        <div className="mt-3 overflow-hidden rounded border border-slate-200 bg-white">
-          {/* original document, streamed through the proxy */}
-          <img src={`/api/raw/${doc.id}`} alt="original document" className="w-full" />
-        </div>
+        <a
+          href="/"
+          className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline"
+        >
+          ← Back to queue
+        </a>
+        <Card className="mt-3 overflow-hidden" padding="p-0">
+          <img
+            src={`/api/raw/${doc.id}`}
+            alt="original document"
+            className="w-full"
+          />
+        </Card>
       </div>
-      <div className="space-y-4">
+
+      <Card padding="p-6" className="space-y-5">
         <div className="flex items-center gap-2">
-          <h1 className="text-lg font-semibold">{doc.doc_type ?? "Unknown"}</h1>
+          <h1 className="text-xl font-semibold text-slate-900">
+            {doc.doc_type ?? "Unknown"}
+          </h1>
           {doc.urgency === "urgent" && <Badge tone="danger">Urgent</Badge>}
         </div>
-        <pre className="overflow-auto rounded bg-slate-100 p-3 text-xs">{JSON.stringify(doc.extracted, null, 2)}</pre>
-        <p className="text-sm text-slate-600">
-          Matched patient: <span className="font-mono">{doc.matched_patient_id ?? "—"}</span>
-          {doc.match_confidence != null && <> (conf {doc.match_confidence.toFixed(0)})</>}
-        </p>
-        {/* one-click confirm */}
-        <form action={async () => { "use server"; await confirm(doc.matched_patient_id, doc.doc_type, true); }}>
-          <button className="rounded bg-emerald-600 px-4 py-2 text-white" disabled={!doc.matched_patient_id}>
+
+        {extracted && Object.keys(extracted).length > 0 && (
+          <dl className="divide-y divide-slate-100">
+            {Object.entries(extracted).map(([key, value]) => (
+              <div key={key} className="flex flex-col py-2">
+                <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  {key.replace(/_/g, " ")}
+                </dt>
+                <dd className="mt-0.5 text-sm font-medium text-slate-900">
+                  {String(value)}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
+
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-slate-500">Matched patient:</span>
+          <span className="text-sm font-medium text-slate-900">
+            {doc.matched_patient
+              ? `${doc.matched_patient.last_name}, ${doc.matched_patient.first_name}${doc.matched_patient.dob ? ` (${doc.matched_patient.dob})` : ""}`
+              : "— none —"}
+          </span>
+          {doc.match_confidence != null && (
+            <Badge tone={doc.match_confidence >= 80 ? "ok" : "warn"}>{doc.match_confidence.toFixed(0)}% conf</Badge>
+          )}
+        </div>
+
+        <form
+          action={async () => {
+            "use server";
+            await confirm(doc.matched_patient_id, doc.doc_type, true);
+          }}
+        >
+          <Button
+            type="submit"
+            variant="primary"
+            disabled={!doc.matched_patient_id}
+            className="w-full"
+          >
             Confirm &amp; file
-          </button>
+          </Button>
         </form>
-        {/* correct the patient, then confirm */}
-        <PatientPicker docId={doc.id} docType={doc.doc_type} />
-      </div>
+
+        <Card padding="p-4" className="space-y-3">
+          <p className="text-sm font-semibold text-slate-700">
+            Reassign patient
+          </p>
+          <PatientPicker docId={doc.id} docType={doc.doc_type} />
+        </Card>
+      </Card>
     </section>
   );
 }
