@@ -9,6 +9,9 @@ const links: [string, string][] = [
   ["/dashboard", "Dashboard"],
   ["/org", "Org"],
   ["/review/failed", "Failed"],
+  ["/billing", "Billing"],
+  ["/channels", "Channels"],
+  ["/settings", "Settings"],
 ];
 
 export function NavLinks() {

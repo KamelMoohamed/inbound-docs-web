@@ -1,31 +1,28 @@
-"use client";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { getSession } from "@/lib/auth";
+import { logoutAction } from "@/app/(auth)/login/actions";
+import { NavLinks } from "./NavLinks";
+import { Badge } from "./Badge";
+import { CreditPill } from "@/components/CreditPill";
 
-const links: [string, string][] = [
-  ["/", "Review"],
-  ["/upload", "Upload"],
-  ["/roster", "Roster"],
-  ["/dashboard", "Dashboard"],
-];
-
-export function Nav() {
-  const path = usePathname();
+export async function Nav() {
+  const session = await getSession();
   return (
-    <nav className="flex items-center gap-1 border-b border-slate-200 bg-white px-6 py-3 text-sm font-medium">
-      <span className="mr-4 font-semibold text-slate-900">Inbound Docs</span>
-      {links.map(([href, label]) => {
-        const active = href === "/" ? path === "/" : path.startsWith(href);
-        return (
-          <Link
-            key={href}
-            href={href}
-            className={`rounded px-3 py-1.5 ${active ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100"}`}
-          >
-            {label}
-          </Link>
-        );
-      })}
+    <nav className="flex h-14 items-center gap-4 border-b border-slate-200 bg-white px-6">
+      <span className="mr-4 font-semibold text-indigo-600">Inbound Docs</span>
+      <NavLinks />
+      {session && (
+        <div className="ml-auto flex items-center gap-3">
+          <span className="text-xs text-slate-500">{session.email}</span>
+          <Badge tone="muted">{session.role}</Badge>
+          <CreditPill />
+          <span className="text-slate-300">|</span>
+          <form action={logoutAction}>
+            <button className="text-sm text-red-600 hover:underline">
+              Logout
+            </button>
+          </form>
+        </div>
+      )}
     </nav>
   );
 }
