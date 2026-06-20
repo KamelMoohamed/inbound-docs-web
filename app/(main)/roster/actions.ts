@@ -16,3 +16,33 @@ export async function importRosterAction(_prev: RosterState, formData: FormData)
     return { ok: false, message: `Import failed: ${e instanceof Error ? e.message : String(e)}` };
   }
 }
+
+export async function rematchAction() {
+  await api.rematch();
+  revalidatePath("/roster");
+}
+
+export async function addPatientAction(formData: FormData) {
+  await api.createPatient({
+    first_name: String(formData.get("first_name")),
+    last_name: String(formData.get("last_name")),
+    dob: String(formData.get("dob") || "") || null,
+    medicare_number: String(formData.get("medicare_number") || "") || null,
+  });
+  revalidatePath("/roster");
+}
+
+export async function updatePatientAction(id: string, formData: FormData) {
+  await api.updatePatient(id, {
+    first_name: String(formData.get("first_name")),
+    last_name: String(formData.get("last_name")),
+    dob: String(formData.get("dob") || "") || null,
+    medicare_number: String(formData.get("medicare_number") || "") || null,
+  });
+  revalidatePath("/roster");
+}
+
+export async function deletePatientAction(id: string) {
+  await api.deletePatient(id);
+  revalidatePath("/roster");
+}
