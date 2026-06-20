@@ -14,3 +14,10 @@ export async function changePasswordAction(_prev: PwState, formData: FormData): 
     return { error: "Current password is incorrect." };
   }
 }
+
+export async function updateNameAction(_prev: { ok?: boolean; error?: string }, formData: FormData): Promise<{ ok?: boolean; error?: string }> {
+  const name = String(formData.get("name") || "").trim();
+  if (!name) return { error: "Name cannot be empty." };
+  try { await api.updateProfile(name); return { ok: true }; }
+  catch { return { error: "Could not update your name." }; }
+}
