@@ -4,6 +4,6 @@ import { fileURLToPath } from "url";
 
 export default defineConfig({
   plugins: [react()],
-  test: { environment: "jsdom", globals: true, setupFiles: [] },
+  test: { environment: "jsdom", globals: true, setupFiles: [], exclude: ["e2e/**", "node_modules/**"] },
   resolve: { alias: { "@": fileURLToPath(new URL("./", import.meta.url)) } },
 });
