@@ -1,4 +1,5 @@
 "use server";
+import { revalidatePath } from "next/cache";
 import { api } from "@/lib/api";
 
 export type RosterState = { ok: boolean; message: string } | null;
@@ -9,6 +10,7 @@ export async function importRosterAction(_prev: RosterState, formData: FormData)
   try {
     const res = await api.importRoster(formData);
     const n = Number(res?.imported ?? 0);
+    revalidatePath("/roster");
     return { ok: true, message: `Imported ${n} patient${n === 1 ? "" : "s"}.` };
   } catch (e) {
     return { ok: false, message: `Import failed: ${e instanceof Error ? e.message : String(e)}` };
