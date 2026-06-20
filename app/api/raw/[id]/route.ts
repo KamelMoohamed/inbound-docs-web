@@ -1,7 +1,8 @@
 import { api } from "@/lib/api";
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
-  const upstream = await api.raw(params.id);
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const upstream = await api.raw(id);
   if (!upstream.ok) return new Response("not found", { status: upstream.status });
   const buf = await upstream.arrayBuffer();
   return new Response(buf, {

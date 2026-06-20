@@ -5,8 +5,9 @@ import { confirmAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function ReviewDetail({ params }: { params: { id: string } }) {
-  const doc = await api.getReview(params.id);
+export default async function ReviewDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const doc = await api.getReview(id);
   const confirm = confirmAction.bind(null, doc.id);
   return (
     <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
