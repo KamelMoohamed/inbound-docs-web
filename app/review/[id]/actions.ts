@@ -8,3 +8,9 @@ export async function confirmAction(id: string, patientId: string | null, docTyp
   revalidatePath("/");
   redirect("/");
 }
+
+export async function confirmWithPatient(id: string, patientId: string, docType: string | null) {
+  await api.confirm(id, { patient_id: patientId, doc_type: docType, accepted_unchanged: false });
+  revalidatePath("/");
+  redirect("/");
+}
