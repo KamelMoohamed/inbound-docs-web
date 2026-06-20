@@ -12,3 +12,9 @@ export function bandLabel(band: string | null): string {
   if (band === "attention") return "Needs attention";
   return "—";
 }
+
+export function creditTone(balance: number): "danger" | "warn" | "ok" {
+  if (balance <= 100) return "danger";
+  if (balance <= 500) return "warn";
+  return "ok";
+}
