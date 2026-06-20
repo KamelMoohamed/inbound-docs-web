@@ -44,7 +44,7 @@ The browser **never sees the JWT** — tokens live only in httpOnly cookies. `li
 | `/dashboard` | ROI metrics — auto-handled %, urgent backlog, filed total, credit balance & usage |
 | `/org` | Team management — list users, invite, toggle role, remove, rotate ingestion key |
 | `/billing` | Billing & credits — current balance, plan tiers, Stripe Checkout/Portal, transaction history |
-| `/channels` | Inbound channel management — system-generated credentials (address + signing secret shown once on create + on rotation) with copy buttons; pause/delete |
+| `/channels` | Inbound channel management — backend-provisioned: email shows a forwarding address; fax shows a dedicated number (deleting releases the number upstream, requires confirmation); token/sftp types (fhir, hl7, secure_msg, sftp) show URL + bearer token / host+credentials (rotatable, shown once); email/fax have no rotatable secret |
 | `/settings` | Account settings — update display name, change password |
 
 ## Billing & credits
