@@ -6,7 +6,10 @@ import { Badge } from "@/components/Badge";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ChannelForm } from "./ChannelForm";
 import { RegenerateSecret } from "./RegenerateSecret";
-import { toggleChannelAction, deleteChannelAction } from "./actions";
+import { DeleteChannel } from "./DeleteChannel";
+import { toggleChannelAction } from "./actions";
+
+const SECRET_TYPES = ["fhir", "hl7", "secure_msg", "sftp"];
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +24,7 @@ export default async function ChannelsPage() {
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
-              <th className="px-4 py-3">Type</th><th className="px-4 py-3">Address</th>
+              <th className="px-4 py-3">Type</th><th className="px-4 py-3">Inbound address / number</th>
               <th className="px-4 py-3">Label</th><th className="px-4 py-3">Status</th>
               {canManage && <th className="px-4 py-3"></th>}
             </tr>
@@ -37,14 +40,12 @@ export default async function ChannelsPage() {
                 <td className="px-4 py-3 text-slate-600">{c.label ?? "—"}</td>
                 <td className="px-4 py-3">{c.active ? <Badge tone="ok">Active</Badge> : <Badge tone="muted">Paused</Badge>}</td>
                 {canManage && (
-                  <td className="flex gap-2 px-4 py-3">
+                  <td className="flex items-center gap-2 px-4 py-3">
                     <form action={toggleChannelAction.bind(null, c.id, !c.active)}>
                       <Button type="submit" variant="secondary" size="sm">{c.active ? "Pause" : "Resume"}</Button>
                     </form>
-                    <form action={deleteChannelAction.bind(null, c.id)}>
-                      <Button type="submit" variant="danger" size="sm">Delete</Button>
-                    </form>
-                    <RegenerateSecret id={c.id} />
+                    {SECRET_TYPES.includes(c.type) && <RegenerateSecret id={c.id} />}
+                    <DeleteChannel id={c.id} type={c.type} />
                   </td>
                 )}
               </tr>
