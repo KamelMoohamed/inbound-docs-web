@@ -1,6 +1,6 @@
 import "server-only";
 import { ReviewItem, ReviewDetail, Patient, Metrics, OrgUser, FailedDoc,
-         BillingSummary, CreditTxn, Channel, HeldDoc } from "./types";
+         BillingSummary, CreditTxn, Channel, HeldDoc, AuditEvent } from "./types";
 import { getSession } from "./auth";
 
 const BASE = process.env.BACKEND_URL!;
@@ -50,8 +50,18 @@ export const api = {
   checkout:       (plan: string) => post("/billing/checkout", { plan }) as Promise<{ url: string }>,
   portal:         () => post("/billing/portal") as Promise<{ url: string }>,
   listChannels:   async () => Channel.array().parse(await get("/org/channels")),
-  createChannel:  (body: { type: string; address: string; label?: string; webhookSecret?: string }) =>
-                    post("/org/channels", body),
+  createChannel:  (body: { type: string; label?: string }) => post("/org/channels", body),
+  regenerateChannelSecret: (id: string) => post(`/org/channels/${id}/regenerate-secret`),
+  createPatient:  (b: { first_name: string; last_name: string; dob?: string | null; medicare_number?: string | null }) => post("/patients", b),
+  updatePatient:  async (id: string, b: Record<string, unknown>) =>
+                    fetch(`${BASE}/patients/${id}`, { method: "PATCH", headers: await authHeaders(), body: JSON.stringify(b) }).then(r => r.json()),
+  deletePatient:  async (id: string) =>
+                    fetch(`${BASE}/patients/${id}`, { method: "DELETE", headers: await authHeaders() }).then(r => r.json()),
+  updateDoc:      async (id: string, b: { doc_type?: string | null; patient_id?: string | null }) =>
+                    fetch(`${BASE}/review/${id}`, { method: "PATCH", headers: await authHeaders(), body: JSON.stringify(b) }).then(r => r.json()),
+  getAudit:       async (id: string) => AuditEvent.array().parse(await get(`/review/${id}/audit`)),
+  updateProfile:  async (name: string) =>
+                    fetch(`${BASE}/auth/me`, { method: "PATCH", headers: await authHeaders(), body: JSON.stringify({ name }) }).then(r => r.json()),
   updateChannel:  async (id: string, body: { label?: string; active?: boolean }) =>
                     fetch(`${BASE}/org/channels/${id}`, { method: "PATCH", headers: await authHeaders(), body: JSON.stringify(body) }).then(r => r.json()),
   deleteChannel:  async (id: string) =>

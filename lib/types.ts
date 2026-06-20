@@ -1,9 +1,26 @@
 import { z } from "zod";
 
+export const MatchedPatient = z.object({
+  id: z.string(), first_name: z.string(), last_name: z.string(), dob: z.string().nullable(),
+});
+export type MatchedPatient = z.infer<typeof MatchedPatient>;
+
+export const AuditEvent = z.object({
+  id: z.string(), event_type: z.string(), actor: z.string(),
+  detail: z.any().nullable(), created_at: z.string(),
+});
+export type AuditEvent = z.infer<typeof AuditEvent>;
+
+export const ChannelSetup = z.object({
+  kind: z.string(), instructions: z.string(), fields: z.record(z.string(), z.string()),
+});
+export type ChannelSetup = z.infer<typeof ChannelSetup>;
+
 export const ReviewItem = z.object({
   id: z.string(), doc_type: z.string().nullable(), urgency: z.string().nullable(),
   review_band: z.string().nullable(), matched_patient_id: z.string().nullable(),
   match_confidence: z.number().nullable(), summary: z.string().nullable(),
+  matched_patient: MatchedPatient.nullable(),
 });
 export type ReviewItem = z.infer<typeof ReviewItem>;
 
@@ -11,6 +28,7 @@ export const ReviewDetail = z.object({
   id: z.string(), status: z.string(), doc_type: z.string().nullable(), urgency: z.string().nullable(),
   extracted: z.any().nullable(), matched_patient_id: z.string().nullable(),
   match_confidence: z.number().nullable(), raw_uri: z.string(),
+  matched_patient: MatchedPatient.nullable(),
 });
 export type ReviewDetail = z.infer<typeof ReviewDetail>;
 
