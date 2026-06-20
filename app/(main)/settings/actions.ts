@@ -1,7 +1,9 @@
 "use server";
 import { api } from "@/lib/api";
 
-export async function changePasswordAction(_prev: { error?: string; ok?: boolean }, formData: FormData) {
+export type PwState = { error?: string; ok?: boolean };
+
+export async function changePasswordAction(_prev: PwState, formData: FormData): Promise<PwState> {
   const current = String(formData.get("currentPassword"));
   const next = String(formData.get("newPassword"));
   if (next.length < 8) return { error: "New password must be at least 8 characters." };

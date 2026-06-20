@@ -46,7 +46,7 @@ export const BillingSummary = z.object({
   balance: z.number(),
   plan: PlanInfo.nullable(),
   held: z.number(),
-  plans: z.record(z.object({ monthlyCredits: z.number(), rolloverCap: z.number() })),
+  plans: z.record(z.string(), z.object({ monthlyCredits: z.number(), rolloverCap: z.number() })),
 });
 export type BillingSummary = z.infer<typeof BillingSummary>;
 

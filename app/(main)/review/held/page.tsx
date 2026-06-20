@@ -12,7 +12,7 @@ export default async function HeldPage() {
     <section className="space-y-4">
       <PageHeader title="Held for credits" />
       {docs.length === 0 ? (
-        <EmptyState>Nothing held — every document is being processed.</EmptyState>
+        <EmptyState message="Nothing held — every document is being processed." />
       ) : (
         <Card padding="p-0">
           <table className="w-full border-collapse text-sm">
