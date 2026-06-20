@@ -1,15 +1,30 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { api } from "@/lib/api";
+import type { ChannelSetup } from "@/lib/types";
 
-export async function createChannelAction(formData: FormData) {
-  await api.createChannel({
-    type: String(formData.get("type")),
-    address: String(formData.get("address")),
-    label: String(formData.get("label") || "") || undefined,
-    webhookSecret: String(formData.get("webhookSecret") || "") || undefined,
-  });
-  revalidatePath("/channels");
+export type ChannelActionState = { setup?: ChannelSetup; error?: string };
+
+export async function createChannelAction(_prev: ChannelActionState, formData: FormData): Promise<ChannelActionState> {
+  try {
+    const res = await api.createChannel({
+      type: String(formData.get("type")),
+      label: String(formData.get("label") || "") || undefined,
+    });
+    revalidatePath("/channels");
+    return { setup: res.setup as ChannelSetup };
+  } catch {
+    return { error: "Could not create the channel." };
+  }
+}
+
+export async function regenerateAction(_prev: ChannelActionState, formData: FormData): Promise<ChannelActionState> {
+  try {
+    const res = await api.regenerateChannelSecret(String(formData.get("id")));
+    return { setup: res.setup as ChannelSetup };
+  } catch {
+    return { error: "Could not rotate the secret." };
+  }
 }
 
 export async function toggleChannelAction(id: string, active: boolean) {

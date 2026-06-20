@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/Badge";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ChannelForm } from "./ChannelForm";
+import { RegenerateSecret } from "./RegenerateSecret";
 import { toggleChannelAction, deleteChannelAction } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -43,6 +44,7 @@ export default async function ChannelsPage() {
                     <form action={deleteChannelAction.bind(null, c.id)}>
                       <Button type="submit" variant="danger" size="sm">Delete</Button>
                     </form>
+                    <RegenerateSecret id={c.id} />
                   </td>
                 )}
               </tr>
