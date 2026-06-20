@@ -14,3 +14,8 @@ export async function confirmWithPatient(id: string, patientId: string, docType:
   revalidatePath("/");
   redirect("/");
 }
+
+export async function changeTypeAction(id: string, formData: FormData) {
+  await api.updateDoc(id, { doc_type: String(formData.get("doc_type")) });
+  revalidatePath(`/review/${id}`);
+}

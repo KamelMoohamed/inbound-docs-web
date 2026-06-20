@@ -3,7 +3,7 @@ import { Badge } from "@/components/Badge";
 import { PatientPicker } from "@/components/PatientPicker";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { confirmAction } from "./actions";
+import { confirmAction, changeTypeAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +13,7 @@ export default async function ReviewDetail({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const doc = await api.getReview(id);
+  const [doc, audit] = await Promise.all([api.getReview(id), api.getAudit(id)]);
   const confirm = confirmAction.bind(null, doc.id);
 
   const extracted = doc.extracted as Record<string, string> | null;
@@ -71,6 +71,18 @@ export default async function ReviewDetail({
           )}
         </div>
 
+        <form action={changeTypeAction.bind(null, doc.id)} className="flex items-end gap-2">
+          <label className="text-sm">Document type
+            <select name="doc_type" defaultValue={doc.doc_type ?? "other"}
+              className="mt-1 block rounded-lg border border-slate-300 px-3 py-2 text-sm">
+              {["pathology", "radiology", "specialist_letter", "discharge_summary", "referral", "other"].map((t) => (
+                <option key={t} value={t}>{t.replace(/_/g, " ")}</option>
+              ))}
+            </select>
+          </label>
+          <Button type="submit" variant="secondary">Save type</Button>
+        </form>
+
         <form
           action={async () => {
             "use server";
@@ -92,6 +104,19 @@ export default async function ReviewDetail({
             Reassign patient
           </p>
           <PatientPicker docId={doc.id} docType={doc.doc_type} />
+        </Card>
+
+        <Card padding="p-4">
+          <p className="mb-2 text-sm font-semibold text-slate-700">Audit trail</p>
+          <ol className="space-y-1 text-xs text-slate-600">
+            {audit.length === 0 && <li className="text-slate-400">No events yet.</li>}
+            {audit.map((e) => (
+              <li key={e.id} className="flex justify-between gap-2">
+                <span><span className="font-medium text-slate-800">{e.event_type}</span> · {e.actor}</span>
+                <span className="text-slate-400">{new Date(e.created_at).toLocaleString()}</span>
+              </li>
+            ))}
+          </ol>
         </Card>
       </Card>
     </section>
