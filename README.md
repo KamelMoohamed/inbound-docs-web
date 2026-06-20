@@ -36,16 +36,16 @@ The browser **never sees the JWT** — tokens live only in httpOnly cookies. `li
 | `/reset-password` | Set a new password via reset link |
 | `/invitations/accept` | Accept a team invitation |
 | `/` | Review queue — urgent rows first, confidence bands, counts in header |
-| `/review/[id]` | Document detail — original doc + extracted fields + one-click confirm or reassign patient |
+| `/review/[id]` | Document detail — original doc + extracted fields + matched patient name (Last, First + DOB), change document type, one-click confirm or reassign patient, audit trail |
 | `/review/failed` | Failed documents — list with error details and per-doc retry button |
 | `/review/held` | Documents held for credits — safely stored, auto-processed on top-up |
 | `/upload` | Upload a document — ingest endpoint forwards to the backend worker |
-| `/roster` | Import a CSV patient roster + re-match trigger |
+| `/roster` | Patient roster — import a CSV, manually add/edit/delete patients, re-match documents |
 | `/dashboard` | ROI metrics — auto-handled %, urgent backlog, filed total, credit balance & usage |
 | `/org` | Team management — list users, invite, toggle role, remove, rotate ingestion key |
 | `/billing` | Billing & credits — current balance, plan tiers, Stripe Checkout/Portal, transaction history |
-| `/channels` | Inbound channel management — list, add, pause, or delete email/fax/SFTP/FHIR/HL7 channels |
-| `/settings` | Account settings — change password |
+| `/channels` | Inbound channel management — system-generated credentials (address + signing secret shown once on create + on rotation) with copy buttons; pause/delete |
+| `/settings` | Account settings — update display name, change password |
 
 ## Billing & credits
 
