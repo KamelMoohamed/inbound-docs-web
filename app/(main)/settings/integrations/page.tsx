@@ -14,7 +14,8 @@ export default async function IntegrationsSettingsPage() {
   ]);
   const canManage = session.role === "owner" || session.role === "admin";
 
-  const authKindFor = (key: string): "api_key" | "oauth2" => (key === "halaxy" ? "oauth2" : "api_key");
+  const authKindFor = (key: string): "api_key" | "oauth2" =>
+    (key === "halaxy" || key === "jane") ? "oauth2" : "api_key";
   const options = catalog.filter((c) => c.tier !== "export_only")
     .map((c) => ({ key: c.key, display_name: c.display_name, authKind: authKindFor(c.key) }));
 
