@@ -47,6 +47,10 @@ The browser **never sees the JWT** — tokens live only in httpOnly cookies. `li
 | `/channels` | Inbound channel management — backend-provisioned: email shows a forwarding address; fax shows a dedicated number (deleting releases the number upstream, requires confirmation); token/sftp types (fhir, hl7, secure_msg, sftp) show URL + bearer token / host+credentials (rotatable, shown once); email/fax have no rotatable secret |
 | `/settings` | Account settings — update display name, change password |
 
+| `/integrations` | Public PMS catalog — tiered grid of supported PMSes (auto-file, roster sync, export-only), links to the request form |
+| `/integrations/request` | Public request form — clinic submits PMS name + email; shows confirmation on success |
+| `/settings/integrations` | Authed connect surface — select PMS, enter API key or begin OAuth flow, view write-back health panel (stuck docs), sync roster or disconnect |
+
 ## Billing & credits
 
 Credit balance, plan information, and transaction history are fetched from the backend over the server-only API client. **No Stripe publishable key or card data ever touches this app** — plan upgrades and subscription management redirect the browser to Stripe-hosted Checkout and Customer Portal pages. The backend issues the redirect URL; the browser follows it directly to Stripe.
@@ -87,3 +91,19 @@ docker run -p 3000:3000 \
 ```
 
 `BACKEND_URL` is supplied as an environment variable to the running container — never baked into the image.
+
+## PMS integration
+
+Three surfaces built on the `/pms` backend endpoints (requires `BACKEND_URL`):
+
+| Surface | Route | Auth |
+|---|---|---|
+| Supported PMS catalog | `/integrations` | Public |
+| Request a PMS integration | `/integrations/request` | Public |
+| Connect your PMS | `/settings/integrations` | Owner / Admin |
+
+**Catalog:** fetched from `GET /pms/catalog` via `publicApi.pmsCatalog()` (no auth). Entries are tiered: `write_back` (auto-files docs), `roster` (patient sync only), `export_only` (works with any PMS).
+
+**Request form:** submits to `POST /pms/requests`. Redirect shows a thank-you page. No auth required.
+
+**Connect surface:** `api_key` PMSes show an API key field; `oauth2` PMSes show an OAuth redirect button. After connecting, owners/admins can sync the roster or disconnect. A write-back health panel lists any stuck documents (filed-but-failed) from `GET /pms/writeback/stuck`.
