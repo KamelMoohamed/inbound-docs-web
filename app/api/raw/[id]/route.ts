@@ -10,5 +10,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const buf = await upstream.arrayBuffer();
   return new Response(buf, { status: 200,
     headers: { "Content-Type": upstream.headers.get("content-type") ?? "application/octet-stream",
+               // Stop browsers MIME-sniffing a stored document into executable HTML.
+               "X-Content-Type-Options": "nosniff",
                "Cache-Control": "no-store" } });
 }
