@@ -86,3 +86,38 @@ export const HeldDoc = z.object({
   credit_cost: z.number().nullable(), created_at: z.string(),
 });
 export type HeldDoc = z.infer<typeof HeldDoc>;
+
+export const PmsCatalogEntry = z.object({
+  key: z.string(),
+  display_name: z.string(),
+  segment: z.string(),
+  hosting: z.string(),
+  tier: z.enum(["write_back", "roster", "export_only"]),
+  capabilities: z.array(z.string()),
+  status: z.enum(["live", "beta", "planned"]),
+});
+export type PmsCatalogEntry = z.infer<typeof PmsCatalogEntry>;
+
+export const PmsConnectionStatus = z.union([
+  z.object({ connected: z.literal(false) }),
+  z.object({
+    connected: z.literal(true),
+    pmsType: z.string(),
+    authKind: z.enum(["api_key", "oauth2"]),
+    status: z.string(),
+    capabilities: z.array(z.string()),
+    lastRosterSyncAt: z.string().nullable(),
+    lastError: z.string().nullable(),
+  }),
+]);
+export type PmsConnectionStatus = z.infer<typeof PmsConnectionStatus>;
+
+export const StuckDoc = z.object({
+  id: z.string(),
+  doc_type: z.string().nullable(),
+  write_back_status: z.string(),
+  write_back_attempts: z.number(),
+  write_back_error: z.string().nullable(),
+  updated_at: z.string(),
+});
+export type StuckDoc = z.infer<typeof StuckDoc>;
