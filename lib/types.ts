@@ -29,6 +29,9 @@ export const ReviewDetail = z.object({
   extracted: z.any().nullable(), matched_patient_id: z.string().nullable(),
   match_confidence: z.number().nullable(), raw_uri: z.string(),
   matched_patient: MatchedPatient.nullable(),
+  pms_filing_id: z.string().nullable().optional(),
+  pms_task_id: z.string().nullable().optional(),
+  pms_acknowledged_at: z.string().nullable().optional(),
 });
 export type ReviewDetail = z.infer<typeof ReviewDetail>;
 
@@ -119,5 +122,52 @@ export const StuckDoc = z.object({
   write_back_attempts: z.number(),
   write_back_error: z.string().nullable(),
   updated_at: z.string(),
+  pms_filing_id: z.string().nullable().optional(),
+  pms_task_id: z.string().nullable().optional(),
+  pms_acknowledged_at: z.string().nullable().optional(),
 });
 export type StuckDoc = z.infer<typeof StuckDoc>;
+
+export const Provider = z.object({
+  id: z.string(), name: z.string(), external_id: z.string().nullable().optional(),
+  user_id: z.string().nullable().optional(), active: z.boolean(),
+});
+export type Provider = z.infer<typeof Provider>;
+
+export const Notification = z.object({
+  id: z.string(), type: z.string(), title: z.string(), body: z.string(),
+  document_id: z.string().nullable(), read_at: z.string().nullable(), created_at: z.string(),
+});
+export const NotificationFeed = z.object({ items: z.array(Notification), unread: z.number() });
+export type Notification = z.infer<typeof Notification>;
+export type NotificationFeed = z.infer<typeof NotificationFeed>;
+
+export const EscalationPolicy = z.object({
+  urgent_sla_minutes: z.number(),
+  routine_sla_minutes: z.number(),
+  failed_retry_ceiling: z.number(),
+  escalate_to_user_id: z.string().nullable(),
+});
+export type EscalationPolicy = z.infer<typeof EscalationPolicy>;
+
+export const ReportSummary = z.object({
+  mis_file_rate: z.number(),
+  median_turnaround_seconds: z.number(),
+  auto_file_pct: z.number(),
+  urgent_sla_adherence_pct: z.number(),
+  per_provider: z.array(z.object({
+    provider_id: z.string(),
+    name: z.string(),
+    filed: z.number(),
+  })),
+});
+export type ReportSummary = z.infer<typeof ReportSummary>;
+
+export const OrgAuditEntry = z.object({
+  id: z.string(),
+  event_type: z.string(),
+  actor: z.string(),
+  detail: z.any().nullable(),
+  created_at: z.string(),
+});
+export type OrgAuditEntry = z.infer<typeof OrgAuditEntry>;

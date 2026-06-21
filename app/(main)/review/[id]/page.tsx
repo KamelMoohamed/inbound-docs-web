@@ -1,9 +1,16 @@
 import { api } from "@/lib/api";
 import { Badge } from "@/components/Badge";
 import { PatientPicker } from "@/components/PatientPicker";
+import { AssignControl } from "@/components/AssignControl";
+import { DispositionMenu } from "@/components/DispositionMenu";
+import { SplitDialog } from "@/components/SplitDialog";
+import { LoopClosure } from "@/components/LoopClosure";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { confirmAction, changeTypeAction } from "./actions";
+import {
+  confirmAction, changeTypeAction, assignAction,
+  discardAction, markDuplicateAction, splitAction,
+} from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -13,47 +20,51 @@ export default async function ReviewDetail({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [doc, audit] = await Promise.all([api.getReview(id), api.getAudit(id)]);
+  const [doc, audit, providers] = await Promise.all([
+    api.getReview(id),
+    api.getAudit(id),
+    api.listProviders(),
+  ]);
   const confirm = confirmAction.bind(null, doc.id);
 
   const extracted = doc.extracted as Record<string, string> | null;
+  const filed = doc.status === "filed" || !!doc.pms_filing_id;
 
   return (
     <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <div>
-        <a
-          href="/"
-          className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline"
-        >
+        <a href="/" className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline">
           ← Back to queue
         </a>
         <Card className="mt-3 overflow-hidden" padding="p-0">
-          <img
-            src={`/api/raw/${doc.id}`}
-            alt="original document"
-            className="w-full"
-          />
+          <img src={`/api/raw/${doc.id}`} alt="original document" className="w-full" />
+        </Card>
+        <Card padding="p-4" className="mt-3">
+          <p className="mb-2 text-sm font-semibold text-slate-700">Split fax</p>
+          <SplitDialog split={splitAction.bind(null, doc.id)} />
         </Card>
       </div>
 
       <Card padding="p-6" className="space-y-5">
         <div className="flex items-center gap-2">
-          <h1 className="text-xl font-semibold text-slate-900">
-            {doc.doc_type ?? "Unknown"}
-          </h1>
+          <h1 className="text-xl font-semibold text-slate-900">{doc.doc_type ?? "Unknown"}</h1>
           {doc.urgency === "urgent" && <Badge tone="danger">Urgent</Badge>}
         </div>
+
+        {filed && (
+          <LoopClosure
+            pms_filing_id={doc.pms_filing_id}
+            pms_task_id={doc.pms_task_id}
+            pms_acknowledged_at={doc.pms_acknowledged_at}
+          />
+        )}
 
         {extracted && Object.keys(extracted).length > 0 && (
           <dl className="divide-y divide-slate-100">
             {Object.entries(extracted).map(([key, value]) => (
               <div key={key} className="flex flex-col py-2">
-                <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                  {key.replace(/_/g, " ")}
-                </dt>
-                <dd className="mt-0.5 text-sm font-medium text-slate-900">
-                  {String(value)}
-                </dd>
+                <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">{key.replace(/_/g, " ")}</dt>
+                <dd className="mt-0.5 text-sm font-medium text-slate-900">{String(value)}</dd>
               </div>
             ))}
           </dl>
@@ -83,27 +94,28 @@ export default async function ReviewDetail({
           <Button type="submit" variant="secondary">Save type</Button>
         </form>
 
-        <form
-          action={async () => {
-            "use server";
-            await confirm(doc.matched_patient_id, doc.doc_type, true);
-          }}
-        >
-          <Button
-            type="submit"
-            variant="primary"
-            disabled={!doc.matched_patient_id}
-            className="w-full"
-          >
+        <Card padding="p-4" className="space-y-3">
+          <p className="text-sm font-semibold text-slate-700">Assign to provider</p>
+          <AssignControl providers={providers} assign={assignAction.bind(null, doc.id)} />
+        </Card>
+
+        <form action={async () => { "use server"; await confirm(doc.matched_patient_id, doc.doc_type, true); }}>
+          <Button type="submit" variant="primary" disabled={!doc.matched_patient_id} className="w-full">
             Confirm &amp; file
           </Button>
         </form>
 
         <Card padding="p-4" className="space-y-3">
-          <p className="text-sm font-semibold text-slate-700">
-            Reassign patient
-          </p>
+          <p className="text-sm font-semibold text-slate-700">Reassign patient</p>
           <PatientPicker docId={doc.id} docType={doc.doc_type} />
+        </Card>
+
+        <Card padding="p-4" className="space-y-3">
+          <p className="text-sm font-semibold text-slate-700">Disposition</p>
+          <DispositionMenu
+            discard={discardAction.bind(null, doc.id)}
+            markDuplicate={markDuplicateAction.bind(null, doc.id)}
+          />
         </Card>
 
         <Card padding="p-4">

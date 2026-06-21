@@ -1,6 +1,6 @@
 "use client";
 import { useActionState } from "react";
-import { importRosterAction } from "@/app/roster/actions";
+import { importRosterAction } from "@/app/(main)/roster/actions";
 
 export function RosterImportForm() {
   const [state, action, pending] = useActionState(importRosterAction, null);

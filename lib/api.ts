@@ -1,7 +1,8 @@
 import "server-only";
 import { ReviewItem, ReviewDetail, Patient, Metrics, OrgUser, FailedDoc,
          BillingSummary, CreditTxn, Channel, HeldDoc, AuditEvent,
-         PmsConnectionStatus, StuckDoc, PmsCatalogEntry } from "./types";
+         PmsConnectionStatus, StuckDoc, PmsCatalogEntry,
+         NotificationFeed, Provider, EscalationPolicy, ReportSummary, OrgAuditEntry } from "./types";
 import { getSession } from "./auth";
 
 const BASE = process.env.BACKEND_URL!;
@@ -81,6 +82,37 @@ export const api = {
   pmsDisconnect:  async () => fetch(`${BASE}/pms/connection`, { method: "DELETE", headers: await authHeaders() }).then(r => r.json()),
   pmsSync:        () => post("/pms/connection/sync") as Promise<{ synced: number }>,
   pmsStuck:       async () => StuckDoc.array().parse(await get("/pms/writeback/stuck")),
+  notifications:  async () => NotificationFeed.parse(await get("/notifications")),
+  markNotifRead:  (id: string) => post(`/notifications/${id}/read`),
+  markAllRead:    () => post("/notifications/read-all"),
+  listProviders:  async () => Provider.array().parse(await get("/providers")),
+  createProvider: (b: { name: string; user_id?: string }) => post("/providers", b),
+  updateProvider: async (id: string, b: Record<string, unknown>) =>
+                    fetch(`${BASE}/providers/${id}`, { method: "PATCH", headers: await authHeaders(), body: JSON.stringify(b) }).then(r => r.json()),
+  deleteProvider: async (id: string) => fetch(`${BASE}/providers/${id}`, { method: "DELETE", headers: await authHeaders() }).then(r => r.json()),
+  assignDoc:      (id: string, b: { provider_id?: string | null; user_id?: string | null }) => post(`/review/${id}/assign`, b),
+  myQueue:        async () => ReviewItem.array().parse(await get("/review?assigned_to=me")),
+  escalationPolicy: async () => EscalationPolicy.parse(await get("/escalation-policy")),
+  setEscalationPolicy: async (body: Record<string, unknown>) =>
+                    fetch(`${BASE}/escalation-policy`, { method: "PUT", headers: await authHeaders(), body: JSON.stringify(body) }).then(r => r.json()),
+  discardDoc:     (id: string, reason: string) => post(`/review/${id}/discard`, { reason }),
+  markDuplicate:  (id: string, of_id: string) => post(`/review/${id}/duplicate`, { of_id }),
+  splitDoc:       (id: string, ranges: string[]) => post(`/review/${id}/split`, { ranges }),
+  reportSummary:  async (from: string, to: string) =>
+                    ReportSummary.parse(await get(`/reports/summary?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`)),
+  mfaSetup:       () => post("/auth/mfa/setup") as Promise<{ otpauthUrl: string; secret: string }>,
+  mfaVerify:      (code: string) => post("/auth/mfa/verify", { code }),
+  mfaDisable:     (code: string) => post("/auth/mfa/disable", { code }),
+  orgAudit:       async (filters: { from?: string; to?: string; type?: string; actor?: string; page?: number }) => {
+    const q = new URLSearchParams();
+    if (filters.from) q.set("from", filters.from);
+    if (filters.to) q.set("to", filters.to);
+    if (filters.type) q.set("type", filters.type);
+    if (filters.actor) q.set("actor", filters.actor);
+    if (filters.page) q.set("page", String(filters.page));
+    const body = await get(`/org/audit?${q.toString()}`);
+    return { items: OrgAuditEntry.array().parse(body.items ?? body), total: body.total ?? (body.items ?? body).length };
+  },
 };
 
 // Public (no auth) — used in server actions for login/signup
@@ -95,7 +127,13 @@ export const publicApi = {
     const r = await fetch(`${BASE}/auth/login`, { method: "POST",
       headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
     if (!r.ok) throw new Error("invalid credentials");
-    return r.json();
+    return r.json() as Promise<{ access?: string; refresh?: string; mfa_required?: boolean; mfaToken?: string }>;
+  },
+  async mfaLogin(mfaToken: string, code: string) {
+    const r = await fetch(`${BASE}/auth/mfa/login`, { method: "POST",
+      headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mfaToken, code }) });
+    if (!r.ok) throw new Error("invalid code");
+    return r.json() as Promise<{ access: string; refresh: string }>;
   },
   async logout(refresh: string) {
     await fetch(`${BASE}/auth/logout`, { method: "POST",

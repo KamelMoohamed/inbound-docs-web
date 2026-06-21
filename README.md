@@ -46,6 +46,11 @@ The browser **never sees the JWT** — tokens live only in httpOnly cookies. `li
 | `/billing` | Billing & credits — current balance, plan tiers, Stripe Checkout/Portal, transaction history |
 | `/channels` | Inbound channel management — backend-provisioned: email shows a forwarding address; fax shows a dedicated number (deleting releases the number upstream, requires confirmation); token/sftp types (fhir, hl7, secure_msg, sftp) show URL + bearer token / host+credentials (rotatable, shown once); email/fax have no rotatable secret |
 | `/settings` | Account settings — update display name, change password |
+| `/providers` | Provider directory — add, edit, activate/deactivate providers for assignment |
+| `/reports` | Reports dashboard — mis-file rate, turnaround, auto-file %, SLA adherence, per-provider throughput |
+| `/settings/escalation` | Escalation & SLA settings — urgent/routine SLA minutes, retry ceiling, escalate-to user (owner/admin) |
+| `/settings/security` | MFA enrolment — set up TOTP, verify, disable |
+| `/org/audit` | Org-wide audit log — filter by date, event type, actor (owner/admin) |
 
 | `/integrations` | Public PMS catalog — tiered grid of supported PMSes (auto-file, roster sync, export-only), links to the request form |
 | `/integrations/request` | Public request form — clinic submits PMS name + email; shows confirmation on success |
@@ -120,3 +125,21 @@ Three surfaces built on the `/pms` backend endpoints (requires `BACKEND_URL`):
 | Jane | oauth2 | roster | roster.read | planned — roster-only until OAuth write scope is granted |
 
 > **Upgrade path for Coreplus/Jane:** once a `document.write` endpoint is confirmed self-serve, add the capability to the adapter, bump the catalog tier to `write_back`, and reseed. No frontend changes needed.
+
+
+## App completion
+
+Additional surfaces built on the app-completion backend (`/notifications`, `/providers`, `/review/:id/assign`, `/escalation-policy`, `/reports/summary`, `/auth/mfa/*`, `/org/audit`):
+
+| Feature | Where |
+|---|---|
+| Notification feed | Bell in nav — unread count, mark read / mark all read |
+| Provider directory | `/providers` — CRUD for assignable providers |
+| Document assignment | Review detail — assign to provider; review queue — "My queue" toggle |
+| Escalation / SLA | `/settings/escalation` — policy form; dashboard — overdue urgent banner |
+| Disposition | Review detail — discard + mark duplicate |
+| Fax split | Review detail — page-range split dialog |
+| Loop closure | Review detail + PMS write-back health — filed / task / ack status |
+| Reports | `/reports` — KPI dashboard (default last 30 days) |
+| MFA | `/settings/security` enrolment; login — MFA challenge step when required |
+| Org audit | `/org/audit` — filterable event log linked from Org page |

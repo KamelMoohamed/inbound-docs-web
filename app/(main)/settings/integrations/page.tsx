@@ -1,6 +1,7 @@
 import { requireSession } from "../../../../lib/auth";
 import { api, publicApi } from "../../../../lib/api";
 import { ConnectForm } from "./ConnectForm";
+import { LoopClosure } from "@/components/LoopClosure";
 import { connectApiKey, beginOAuth, disconnect, syncRoster } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -50,12 +51,19 @@ export default async function IntegrationsSettingsPage() {
         ) : (
           <table className="w-full text-sm border-collapse">
             <thead><tr className="text-left text-gray-500">
-              <th className="py-1">Document</th><th>Status</th><th>Attempts</th><th>Error</th></tr></thead>
+              <th className="py-1">Document</th><th>Status</th><th>Loop closure</th><th>Attempts</th><th>Error</th></tr></thead>
             <tbody>
               {stuck.map((d) => (
                 <tr key={d.id} className="border-t">
                   <td className="py-1">{d.doc_type ?? d.id}</td>
                   <td>{d.write_back_status}</td>
+                  <td>
+                    <LoopClosure
+                      pms_filing_id={d.pms_filing_id}
+                      pms_task_id={d.pms_task_id}
+                      pms_acknowledged_at={d.pms_acknowledged_at}
+                    />
+                  </td>
                   <td>{d.write_back_attempts}</td>
                   <td className="text-red-600">{d.write_back_error ?? "—"}</td>
                 </tr>
