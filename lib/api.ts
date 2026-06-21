@@ -1,6 +1,7 @@
 import "server-only";
 import { ReviewItem, ReviewDetail, Patient, Metrics, OrgUser, FailedDoc,
-         BillingSummary, CreditTxn, Channel, HeldDoc, AuditEvent } from "./types";
+         BillingSummary, CreditTxn, Channel, HeldDoc, AuditEvent,
+         PmsConnectionStatus, StuckDoc, PmsCatalogEntry } from "./types";
 import { getSession } from "./auth";
 
 const BASE = process.env.BACKEND_URL!;
@@ -73,6 +74,13 @@ export const api = {
     const h = await authHeaders();
     return fetch(`${BASE}/review/${id}/raw`, { headers: h, cache: "no-store" });
   },
+  pmsConnection:  async () => PmsConnectionStatus.parse(await get("/pms/connection")),
+  pmsConnectApiKey: (pms_type: string, api_key: string) => post("/pms/connection", { pms_type, api_key }),
+  pmsAuthorizeUrl: async (pms_type: string) =>
+                    get(`/pms/connection/authorize?pms_type=${encodeURIComponent(pms_type)}`) as Promise<{ url: string; state: string }>,
+  pmsDisconnect:  async () => fetch(`${BASE}/pms/connection`, { method: "DELETE", headers: await authHeaders() }).then(r => r.json()),
+  pmsSync:        () => post("/pms/connection/sync") as Promise<{ synced: number }>,
+  pmsStuck:       async () => StuckDoc.array().parse(await get("/pms/writeback/stuck")),
 };
 
 // Public (no auth) — used in server actions for login/signup
@@ -111,5 +119,16 @@ export const publicApi = {
     const r = await fetch(`${BASE}/invitations/accept`, { method: "POST",
       headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, name, password }) });
     if (!r.ok) throw new Error(await r.text());
+  },
+  async pmsCatalog() {
+    const r = await fetch(`${BASE}/pms/catalog`, { cache: "no-store" });
+    if (!r.ok) throw new Error("catalog unavailable");
+    return PmsCatalogEntry.array().parse(await r.json());
+  },
+  async submitPmsRequest(input: { pms_name: string; clinic_name?: string; clinic_size?: string; segment?: string; contact_email: string; note?: string }) {
+    const r = await fetch(`${BASE}/pms/requests`, { method: "POST",
+      headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
+    if (!r.ok) throw new Error(await r.text());
+    return r.json() as Promise<{ id: string; status: string }>;
   },
 };

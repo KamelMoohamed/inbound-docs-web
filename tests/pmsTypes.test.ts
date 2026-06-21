@@ -14,6 +14,7 @@ describe("PMS types", () => {
   it("parses a connected status", () => {
     const s = PmsConnectionStatus.parse({ connected: true, pmsType: "cliniko", authKind: "api_key",
       status: "connected", capabilities: ["document.write"], lastRosterSyncAt: null, lastError: null });
+    if (!s.connected) throw new Error("expected connected");
     expect(s.pmsType).toBe("cliniko");
   });
   it("parses a stuck doc", () => {
