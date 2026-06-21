@@ -107,3 +107,16 @@ Three surfaces built on the `/pms` backend endpoints (requires `BACKEND_URL`):
 **Request form:** submits to `POST /pms/requests`. Redirect shows a thank-you page. No auth required.
 
 **Connect surface:** `api_key` PMSes show an API key field; `oauth2` PMSes show an OAuth redirect button. After connecting, owners/admins can sync the roster or disconnect. A write-back health panel lists any stuck documents (filed-but-failed) from `GET /pms/writeback/stuck`.
+
+### Supported adapters
+
+| PMS | Auth | Tier | Capabilities | Status |
+|---|---|---|---|---|
+| Cliniko | api_key | write_back | roster.read, document.write | live |
+| Halaxy | oauth2 | write_back | roster.read, document.write | live |
+| Power Diary | api_key | write_back | roster.read, document.write | beta |
+| Nookal | api_key | write_back | roster.read, document.write | beta |
+| Coreplus | api_key | roster | roster.read | planned — roster-only until self-serve document-write is confirmed |
+| Jane | oauth2 | roster | roster.read | planned — roster-only until OAuth write scope is granted |
+
+> **Upgrade path for Coreplus/Jane:** once a `document.write` endpoint is confirmed self-serve, add the capability to the adapter, bump the catalog tier to `write_back`, and reseed. No frontend changes needed.
