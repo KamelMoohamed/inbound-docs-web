@@ -11,6 +11,7 @@ const links: [string, string][] = [
   ["/review/failed", "Failed"],
   ["/billing", "Billing"],
   ["/channels", "Channels"],
+  ["/settings/integrations", "Integrations"],
   ["/settings", "Settings"],
 ];
 
