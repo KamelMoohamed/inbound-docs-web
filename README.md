@@ -51,6 +51,15 @@ The browser **never sees the JWT** — tokens live only in httpOnly cookies. `li
 | `/settings/escalation` | Escalation & SLA settings — urgent/routine SLA minutes, retry ceiling, escalate-to user (owner/admin) |
 | `/settings/security` | MFA enrolment — set up TOTP, verify, disable |
 | `/org/audit` | Org-wide audit log — filter by date, event type, actor (owner/admin) |
+| `/verify-email` | Email verification — unlocks trial credits via `?token=` link |
+| `/onboarding` | Onboarding checklist — setup steps with dismiss |
+| `/settings/sso` | SSO (OIDC) configuration — domain, issuer, client credentials (owner/admin) |
+| `/settings/danger` | Delete organisation — type-to-confirm danger zone (owner only) |
+| `/settings/webhooks` | Webhook endpoints — create, pause, test, delete (owner/admin) |
+| `/admin/tenants` | Platform admin — tenant list, credit adjust, impersonate (`super_admin`) |
+| `/terms`, `/privacy` | Legal pages — privacy policy includes AI-use and overseas-disclosure sections |
+| `/sub-processors` | Public sub-processor register |
+| `/mfa-enroll` | Forced MFA enrollment when required by role |
 
 | `/integrations` | Public PMS catalog — tiered grid of supported PMSes (auto-file, roster sync, export-only), links to the request form |
 | `/integrations/request` | Public request form — clinic submits PMS name + email; shows confirmation on success |
@@ -143,3 +152,29 @@ Additional surfaces built on the app-completion backend (`/notifications`, `/pro
 | Reports | `/reports` — KPI dashboard (default last 30 days) |
 | MFA | `/settings/security` enrolment; login — MFA challenge step when required |
 | Org audit | `/org/audit` — filterable event log linked from Org page |
+
+## SaaS platform
+
+Surfaces built on the SaaS platform backend (`/auth/verify-email`, `/auth/resend-verification`, `/onboarding`, `/org/sso`, `/auth/sso/authorize`, `/org/export`, `DELETE /org`, billing dunning fields, `/admin/*`, `/webhooks`):
+
+| Feature | Where |
+|---|---|
+| Signup consent | `/signup` — Terms + Privacy checkboxes required before submit |
+| Email verification | `/verify-email?token=` — unlocks trial; unverified banner in authed layout with resend |
+| Onboarding wizard | Dashboard card + `/onboarding` — checklist until complete or dismissed |
+| SSO | `/settings/sso` config; login — work-email SSO button → IdP redirect |
+| Data export | `/settings` — zip download via `GET /org/export` |
+| Account deletion | `/settings/danger` — type org name to confirm, clears session |
+| Dunning banner | Authed layout — past-due / grace-period warnings linking to billing portal |
+| Admin back-office | `/admin/tenants` — list, detail, credit adjust, impersonate (`platformRole=super_admin`) |
+| Webhooks | `/settings/webhooks` — CRUD + one-time signing secret on create |
+
+## Healthcare compliance (code)
+
+| Requirement | Where |
+|---|---|
+| Secure session cookies (`Secure` in production) | `lib/cookieOptions.ts` — used by `lib/auth.ts`, `middleware.ts`, admin impersonation cookie |
+| Privacy policy (AI-use + overseas disclosure) | `/privacy` — structured APP-compliant sections |
+| In-product AI transparency | `AiUseNotice` on `/upload` and `/review/[id]` |
+| Forced MFA enrollment | `/mfa-enroll?token=` — when login returns `mfa_enrollment_required` |
+| Sub-processor register | `/sub-processors` — public list linked from privacy policy |
