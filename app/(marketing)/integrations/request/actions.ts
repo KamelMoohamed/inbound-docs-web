@@ -1,6 +1,6 @@
 "use server";
 import { redirect } from "next/navigation";
-import { publicApi } from "../../../lib/api";
+import { publicApi } from "@/lib/api";
 
 export async function submitRequest(formData: FormData) {
   await publicApi.submitPmsRequest({

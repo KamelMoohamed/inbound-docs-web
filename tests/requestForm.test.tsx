@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { RequestForm } from "../app/integrations/request/RequestForm";
+import { RequestForm } from "@/app/(marketing)/integrations/request/RequestForm";
 
 describe("RequestForm", () => {
   it("disables submit until PMS name and email are present", () => {
