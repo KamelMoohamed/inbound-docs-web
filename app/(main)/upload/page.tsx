@@ -1,6 +1,7 @@
 "use client";
 import { useActionState } from "react";
 import { uploadAction } from "./actions";
+import { AiUseNotice } from "@/components/AiUseNotice";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -11,7 +12,8 @@ export default function UploadPage() {
   return (
     <section className="max-w-md">
       <PageHeader title="Upload a document" />
-      <Card padding="p-6">
+      <AiUseNotice />
+      <Card padding="p-6" className="mt-4">
         <form action={action} className="space-y-4">
           <FormField label="Document (image or PDF)">
             <input

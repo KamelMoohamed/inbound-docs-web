@@ -5,6 +5,7 @@ import { AssignControl } from "@/components/AssignControl";
 import { DispositionMenu } from "@/components/DispositionMenu";
 import { SplitDialog } from "@/components/SplitDialog";
 import { LoopClosure } from "@/components/LoopClosure";
+import { AiUseNotice } from "@/components/AiUseNotice";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import {
@@ -33,7 +34,7 @@ export default async function ReviewDetail({
   return (
     <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <div>
-        <a href="/" className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline">
+        <a href="/inbox" className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline">
           ← Back to queue
         </a>
         <Card className="mt-3 overflow-hidden" padding="p-0">
@@ -58,6 +59,8 @@ export default async function ReviewDetail({
             pms_acknowledged_at={doc.pms_acknowledged_at}
           />
         )}
+
+        <AiUseNotice />
 
         {extracted && Object.keys(extracted).length > 0 && (
           <dl className="divide-y divide-slate-100">

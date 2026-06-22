@@ -6,13 +6,13 @@ import { api } from "@/lib/api";
 export async function confirmAction(id: string, patientId: string | null, docType: string | null, acceptedUnchanged: boolean) {
   await api.confirm(id, { patient_id: patientId, doc_type: docType, accepted_unchanged: acceptedUnchanged });
   revalidatePath("/");
-  redirect("/");
+  redirect("/inbox");
 }
 
 export async function confirmWithPatient(id: string, patientId: string, docType: string | null) {
   await api.confirm(id, { patient_id: patientId, doc_type: docType, accepted_unchanged: false });
   revalidatePath("/");
-  redirect("/");
+  redirect("/inbox");
 }
 
 export async function changeTypeAction(id: string, formData: FormData) {
@@ -31,13 +31,13 @@ export async function assignAction(id: string, formData: FormData) {
 export async function discardAction(id: string, formData: FormData) {
   await api.discardDoc(id, String(formData.get("reason") || "discarded"));
   revalidatePath("/");
-  redirect("/");
+  redirect("/inbox");
 }
 
 export async function markDuplicateAction(id: string, formData: FormData) {
   await api.markDuplicate(id, String(formData.get("of_id") || ""));
   revalidatePath("/");
-  redirect("/");
+  redirect("/inbox");
 }
 
 export async function splitAction(id: string, formData: FormData) {
@@ -45,5 +45,5 @@ export async function splitAction(id: string, formData: FormData) {
   const ranges = raw.split(",").map((s) => s.trim()).filter(Boolean);
   await api.splitDoc(id, ranges);
   revalidatePath("/");
-  redirect("/");
+  redirect("/inbox");
 }
