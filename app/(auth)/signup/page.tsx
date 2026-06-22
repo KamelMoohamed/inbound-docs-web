@@ -1,11 +1,16 @@
 "use client";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { signupAction } from "./actions";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
 
 export default function SignupPage() {
   const [state, action, pending] = useActionState(signupAction, null);
+  const [tos, setTos] = useState(false);
+  const [privacy, setPrivacy] = useState(false);
+  const [dpa, setDpa] = useState(false);
+  const canSubmit = tos && privacy && dpa;
+
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-slate-50">
       <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
@@ -56,7 +61,22 @@ export default function SignupPage() {
               className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
             />
           </FormField>
-          <Button type="submit" variant="primary" loading={pending} className="w-full">
+          <input type="hidden" name="tos_accepted" value={tos ? "true" : "false"} />
+          <input type="hidden" name="privacy_accepted" value={privacy ? "true" : "false"} />
+          <input type="hidden" name="dpa_accepted" value={dpa ? "true" : "false"} />
+          <label className="flex items-start gap-2 text-sm text-slate-700">
+            <input type="checkbox" checked={tos} onChange={(e) => setTos(e.target.checked)} aria-label="I agree to the Terms" className="mt-1" />
+            <span>I agree to the <a href="/terms" target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline">Terms</a></span>
+          </label>
+          <label className="flex items-start gap-2 text-sm text-slate-700">
+            <input type="checkbox" checked={privacy} onChange={(e) => setPrivacy(e.target.checked)} aria-label="I agree to the Privacy Policy" className="mt-1" />
+            <span>I agree to the <a href="/privacy" target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline">Privacy Policy</a></span>
+          </label>
+          <label className="flex items-start gap-2 text-sm text-slate-700">
+            <input type="checkbox" checked={dpa} onChange={(e) => setDpa(e.target.checked)} aria-label="I agree to the Data Processing Agreement" className="mt-1" />
+            <span>On behalf of my practice, I agree to the <a href="/dpa" target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline">Data Processing Agreement</a> for handling patient health information</span>
+          </label>
+          <Button type="submit" variant="primary" loading={pending} disabled={!canSubmit} className="w-full">
             Create account
           </Button>
         </form>

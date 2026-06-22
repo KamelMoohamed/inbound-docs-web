@@ -8,6 +8,9 @@ test("staff can log in, review and confirm a document", async ({ page }) => {
   await page.fill('[name=name]', 'Owner');
   await page.fill('[name=email]', 'owner@test.clinic');
   await page.fill('[name=password]', 'pw-12345678');
+  await page.getByLabel(/I agree to the Terms/i).check();
+  await page.getByLabel(/I agree to the Privacy Policy/i).check();
+  await page.getByLabel(/I agree to the Data Processing Agreement/i).check();
   await page.click('button[type=submit]');
   await expect(page).toHaveURL("http://localhost:3000/");
   await expect(page.getByRole("heading", { name: /documents to review/i })).toBeVisible();

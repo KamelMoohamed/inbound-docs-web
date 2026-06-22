@@ -13,10 +13,13 @@ export async function signupAction(
       formData.get("email") as string,
       formData.get("name") as string,
       formData.get("password") as string,
+      formData.get("tos_accepted") === "true",
+      formData.get("privacy_accepted") === "true",
+      formData.get("dpa_accepted") === "true",
     );
     await setAuthCookies(data.access, data.refresh);
   } catch {
     return { error: "Could not create account. Please try again." };
   }
-  redirect("/");
+  redirect("/inbox");
 }
