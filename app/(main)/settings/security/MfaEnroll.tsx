@@ -23,8 +23,10 @@ export function MfaEnroll({
     return (
       <form action={disable} className="flex flex-col gap-2">
         <label className="text-sm">Enter code to disable MFA
-          <input name="code" pattern="[0-9]{6}" maxLength={6} required aria-label="MFA code"
-            className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-mono" />
+          <input name="code" type="text" inputMode="numeric" autoComplete="one-time-code"
+            pattern="[0-9]{6}" maxLength={6} required aria-label="6-digit MFA code"
+            onInput={(e) => { e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "").slice(0, 6); }}
+            className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-mono tracking-widest" />
         </label>
         <button type="submit" className="rounded-lg border border-red-300 px-4 py-2 text-sm text-red-700">Disable MFA</button>
       </form>
@@ -46,8 +48,10 @@ export function MfaEnroll({
           )}
           {secret && <p className="font-mono text-xs text-slate-600">Secret: {secret}</p>}
           <label className="text-sm">Verification code
-            <input name="code" pattern="[0-9]{6}" maxLength={6} required aria-label="MFA code"
-              className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-mono" />
+            <input name="code" type="text" inputMode="numeric" autoComplete="one-time-code"
+              pattern="[0-9]{6}" maxLength={6} required aria-label="6-digit verification code"
+              onInput={(e) => { e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "").slice(0, 6); }}
+              className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-mono tracking-widest" />
           </label>
           <button type="submit" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Verify & enable</button>
         </form>

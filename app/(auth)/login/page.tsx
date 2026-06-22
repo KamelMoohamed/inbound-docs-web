@@ -2,6 +2,7 @@
 import { useActionState } from "react";
 import { loginAction, mfaLoginAction } from "./actions";
 import { MfaChallenge } from "./MfaChallenge";
+import { SsoButton } from "@/components/SsoButton";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
 
@@ -49,6 +50,8 @@ export default function LoginPage() {
             Sign in
           </Button>
         </form>
+
+        <SsoButton />
 
         <p className="mt-5 text-sm text-slate-500">
           No account?{" "}
