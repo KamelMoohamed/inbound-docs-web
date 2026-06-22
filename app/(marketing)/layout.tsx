@@ -10,7 +10,7 @@ export const metadata = {
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-white text-slate-900">
+      <body className="min-h-screen bg-white text-slate-900" suppressHydrationWarning>
         <MarketingHeader />
         <main>{children}</main>
         <MarketingFooter />

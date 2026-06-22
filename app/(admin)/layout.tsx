@@ -9,7 +9,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (session.platformRole !== "super_admin") redirect("/inbox");
   return (
     <html lang="en">
-      <body className="min-h-screen bg-slate-900 text-slate-100">
+      <body className="min-h-screen bg-slate-900 text-slate-100" suppressHydrationWarning>
         <header className="border-b border-slate-700 px-6 py-4">
           <div className="mx-auto flex max-w-5xl items-center justify-between">
             <span className="font-semibold">Inbound Docs Admin</span>
