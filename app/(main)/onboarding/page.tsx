@@ -9,7 +9,7 @@ export default async function OnboardingPage() {
   const status = await api.onboarding();
   return (
     <section className="max-w-lg">
-      <PageHeader title="Onboarding" subtitle="Complete these steps to get the most from Inbound Docs" />
+      <PageHeader title="Onboarding" subtitle="Complete these steps to get the most from CliniDoc" />
       <OnboardingChecklist status={status} dismiss={dismissOnboardingAction} />
     </section>
   );

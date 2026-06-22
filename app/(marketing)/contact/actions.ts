@@ -14,9 +14,9 @@ export async function submitContact(_prev: unknown, formData: FormData) {
     const r = await fetch(`${BASE}/leads/contact`, {
       method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
     });
-    if (!r.ok) return { ok: false, error: "Something went wrong — email us at hello@yourdomain." };
+    if (!r.ok) return { ok: false, error: "Something went wrong — email us at support@clinidoc.com.au." };
     return { ok: true };
   } catch {
-    return { ok: false, error: "Something went wrong — email us at hello@yourdomain." };
+    return { ok: false, error: "Something went wrong — email us at support@clinidoc.com.au." };
   }
 }

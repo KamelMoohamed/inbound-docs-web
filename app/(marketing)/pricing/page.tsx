@@ -52,7 +52,7 @@ const faqs: [string, string][] = [
 ];
 
 export const metadata = {
-  title: "Pricing — Inbound Docs",
+  title: "Pricing — CliniDoc",
   description: "Simple, usage-based pricing for clinical document triage. Start free with trial credits, then pay per document processed.",
 };
 

@@ -12,7 +12,7 @@ export default async function AcceptPage({
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-slate-50">
       <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-        <p className="text-xl font-semibold text-indigo-600">Inbound Docs</p>
+        <p className="text-xl font-semibold text-indigo-600">CliniDoc</p>
         <h1 className="mt-2 text-lg font-semibold text-slate-900">Accept invitation</h1>
 
         {!inv ? (

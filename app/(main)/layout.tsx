@@ -5,7 +5,7 @@ import { VerifyBanner } from "@/components/VerifyBanner";
 import { BillingBanner } from "@/components/BillingBanner";
 import { ImpersonatingBanner } from "@/components/ImpersonatingBanner";
 
-export const metadata = { title: "Inbound Docs" };
+export const metadata = { title: "CliniDoc" };
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (

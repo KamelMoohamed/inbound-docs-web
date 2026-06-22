@@ -12,7 +12,7 @@ const controls = [
 ];
 
 export const metadata = {
-  title: "Security & Compliance — Inbound Docs",
+  title: "Security & Compliance — CliniDoc",
   description: "Onshore hosting, encryption, MFA, audit logging and privacy controls for Australian health information.",
 };
 

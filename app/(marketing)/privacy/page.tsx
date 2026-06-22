@@ -1,7 +1,7 @@
 import { Section } from "@/components/marketing/Section";
 
 export const metadata = {
-  title: "Privacy Policy — Inbound Docs",
+  title: "Privacy Policy — CliniDoc",
   description: "How we handle personal and health information under the Privacy Act 1988 (Cth) and the Australian Privacy Principles.",
 };
 
@@ -10,8 +10,8 @@ const sections: { heading: string; body: React.ReactNode }[] = [
     heading: "1. Who we are",
     body: (
       <p>
-        [Legal entity name, ABN, contact]. We provide a service that ingests, processes and files clinical
-        documents on behalf of medical practices. Privacy enquiries: [privacy@yourdomain].
+        Kamel Kamel (ABN 17 732 182 203). We provide a service that ingests, processes and files clinical
+        documents on behalf of medical practices. Privacy enquiries: privacy@clinidoc.com.au.
       </p>
     ),
   },
@@ -88,7 +88,7 @@ const sections: { heading: string; body: React.ReactNode }[] = [
     heading: "9. Contact & complaints",
     body: (
       <p>
-        Contact [privacy@yourdomain]. You may also complain to the OAIC at{" "}
+        Contact privacy@clinidoc.com.au. You may also complain to the OAIC at{" "}
         <a className="font-medium text-indigo-600 hover:text-indigo-700" href="https://www.oaic.gov.au" target="_blank" rel="noreferrer">oaic.gov.au</a>.
       </p>
     ),
@@ -103,11 +103,6 @@ export default function PrivacyPage() {
         Last updated: 21 June 2026. This policy describes how we handle personal and health information under
         the Privacy Act 1988 (Cth) and the Australian Privacy Principles (APPs).
       </p>
-
-      <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-        <strong>Owner:</strong> replace the bracketed details with your registered entity information before
-        going live.
-      </div>
 
       <div className="mt-10 space-y-8">
         {sections.map((s) => (

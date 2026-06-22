@@ -17,7 +17,7 @@ export async function Nav() {
   }
   return (
     <nav className="flex h-14 items-center gap-4 border-b border-slate-200 bg-white px-6">
-      <span className="mr-4 font-semibold text-indigo-600">Inbound Docs</span>
+      <span className="mr-4 font-semibold text-indigo-600">CliniDoc</span>
       <NavLinks />
       {session && (
         <div className="ml-auto flex items-center gap-3">

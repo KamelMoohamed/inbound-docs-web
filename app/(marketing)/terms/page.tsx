@@ -5,10 +5,10 @@ export default function TermsPage() {
       <p className="text-sm text-slate-500">Last updated: 21 June 2026. <em>Owner: have these reviewed by an Australian lawyer before go-live.</em></p>
 
       <h2>1. Agreement</h2>
-      <p>These terms govern your use of the Inbound Docs service operated by [legal entity, ABN]. By creating an account you accept these terms and our <a href="/privacy">Privacy Policy</a>.</p>
+      <p>These terms govern your use of the CliniDoc service operated by Kamel Kamel (ABN 17 732 182 203). By creating an account you accept these terms and our <a href="/privacy">Privacy Policy</a>.</p>
 
       <h2>2. The service</h2>
-      <p>Inbound Docs ingests, triages, matches and files clinical documents on behalf of your practice. AI-assisted output is reviewed and confirmed by your staff before filing. The service does not provide medical advice.</p>
+      <p>CliniDoc ingests, triages, matches and files clinical documents on behalf of your practice. AI-assisted output is reviewed and confirmed by your staff before filing. The service does not provide medical advice.</p>
 
       <h2>3. Your responsibilities</h2>
       <p>You are responsible for obtaining patient consent as required, for the accuracy of your roster, for reviewing documents before filing, and for maintaining the security of your account credentials and MFA.</p>
@@ -32,7 +32,7 @@ export default function TermsPage() {
       <p>Either party may terminate per the plan terms. On termination we return or delete your data as described in the DPA / Privacy Policy.</p>
 
       <h2>10. Changes &amp; contact</h2>
-      <p>We may update these terms; material changes will be notified. Questions: [legal@yourdomain].</p>
+      <p>We may update these terms; material changes will be notified. Questions: legal@clinidoc.com.au.</p>
     </div>
   );
 }

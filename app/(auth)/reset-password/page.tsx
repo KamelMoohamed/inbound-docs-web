@@ -15,7 +15,7 @@ export default function ResetPage({
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-slate-50">
       <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-        <p className="text-xl font-semibold text-indigo-600">Inbound Docs</p>
+        <p className="text-xl font-semibold text-indigo-600">CliniDoc</p>
         <h1 className="mt-2 text-lg font-semibold text-slate-900">Set new password</h1>
         <p className="mt-1 text-sm text-slate-500">Choose a strong password</p>
 

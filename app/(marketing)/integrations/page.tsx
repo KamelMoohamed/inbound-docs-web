@@ -6,7 +6,7 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Integrations — Inbound Docs",
+  title: "Integrations — CliniDoc",
   description: "We work with every clinic. Connected practice software gets documents filed automatically; everyone else can start today in export mode.",
 };
 

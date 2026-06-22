@@ -2,7 +2,7 @@ import { Section } from "@/components/marketing/Section";
 import { SUB_PROCESSORS } from "@/lib/sub-processors";
 
 export const metadata = {
-  title: "Sub-processors — Inbound Docs",
+  title: "Sub-processors — CliniDoc",
   description: "The third-party providers we engage to deliver clinical document triage, what each is used for, and where it operates.",
 };
 

@@ -3,7 +3,7 @@ import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 
 export const metadata = {
-  title: "Inbound Docs — clinical document triage for Australian practices",
+  title: "CliniDoc — clinical document triage for Australian practices",
   description: "Automatically triage, match and file inbound clinical documents. Onshore, encrypted, human-in-the-loop.",
 };
 

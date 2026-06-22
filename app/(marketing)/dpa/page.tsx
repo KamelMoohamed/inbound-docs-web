@@ -10,7 +10,7 @@ export default function DpaPage() {
 
       <p>
         This Data Processing Agreement (&ldquo;DPA&rdquo;) forms part of the <a href="/terms">Terms of Service</a>
-        between [legal entity, ABN] (&ldquo;Processor&rdquo;, &ldquo;we&rdquo;) and the practice that accepts it
+        between Kamel Kamel (ABN 17 732 182 203) (&ldquo;Processor&rdquo;, &ldquo;we&rdquo;) and the practice that accepts it
         (&ldquo;Controller&rdquo;, &ldquo;you&rdquo;). By accepting at signup, the person accepting confirms they are
         authorised to bind the practice.
       </p>
@@ -73,7 +73,7 @@ export default function DpaPage() {
       </p>
 
       <h2>10. Contact</h2>
-      <p>Privacy / data questions: [privacy@yourdomain].</p>
+      <p>Privacy / data questions: privacy@clinidoc.com.au.</p>
     </div>
   );
 }

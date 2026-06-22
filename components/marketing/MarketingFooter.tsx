@@ -11,7 +11,7 @@ export function MarketingFooter() {
     <footer className="border-t border-slate-200 bg-slate-50">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 py-12 md:grid-cols-4">
         <div>
-          <div className="text-base font-semibold text-indigo-600">Inbound Docs</div>
+          <div className="text-base font-semibold text-indigo-600">CliniDoc</div>
           <p className="mt-2 text-sm text-slate-500">Clinical document triage and filing for Australian practices.</p>
         </div>
         {cols.map(([title, links]) => (
@@ -26,7 +26,7 @@ export function MarketingFooter() {
         ))}
       </div>
       <div className="border-t border-slate-200 px-6 py-6 text-center text-xs text-slate-400">
-        © {new Date().getFullYear()} Inbound Docs. Hosted in Australia.
+        © {new Date().getFullYear()} CliniDoc. Hosted in Australia.
       </div>
     </footer>
   );

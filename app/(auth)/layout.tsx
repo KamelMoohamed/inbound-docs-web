@@ -1,6 +1,6 @@
 import "../globals.css";
 
-export const metadata = { title: "Inbound Docs" };
+export const metadata = { title: "CliniDoc" };
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
