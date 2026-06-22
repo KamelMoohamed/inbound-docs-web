@@ -68,6 +68,8 @@ export const BillingSummary = z.object({
   plan: PlanInfo.nullable(),
   held: z.number(),
   plans: z.record(z.string(), z.object({ monthlyCredits: z.number(), rolloverCap: z.number() })),
+  past_due: z.boolean().optional(),
+  grace_until: z.string().nullable().optional(),
 });
 export type BillingSummary = z.infer<typeof BillingSummary>;
 
@@ -171,3 +173,39 @@ export const OrgAuditEntry = z.object({
   created_at: z.string(),
 });
 export type OrgAuditEntry = z.infer<typeof OrgAuditEntry>;
+
+export const MeProfile = z.object({
+  id: z.string(), email: z.string(), name: z.string(), role: z.string(),
+  emailVerified: z.boolean(), orgName: z.string().optional(),
+});
+export type MeProfile = z.infer<typeof MeProfile>;
+
+export const OnboardingStatus = z.object({
+  email_verified: z.boolean(),
+  has_channel: z.boolean(),
+  has_patients: z.boolean(),
+  pms_connected: z.boolean(),
+  has_subscription: z.boolean(),
+  complete: z.boolean().optional(),
+  dismissed: z.boolean().optional(),
+});
+export type OnboardingStatus = z.infer<typeof OnboardingStatus>;
+
+export const SsoConfig = z.object({
+  domain: z.string().nullable(),
+  issuer: z.string().nullable(),
+  client_id: z.string().nullable(),
+  enabled: z.boolean().optional(),
+});
+export type SsoConfig = z.infer<typeof SsoConfig>;
+
+export const AdminTenant = z.object({
+  id: z.string(), name: z.string(), plan: z.string().nullable(),
+  credit_balance: z.number(), doc_count: z.number(),
+});
+export type AdminTenant = z.infer<typeof AdminTenant>;
+
+export const WebhookEndpoint = z.object({
+  id: z.string(), url: z.string(), events: z.array(z.string()), active: z.boolean(),
+});
+export type WebhookEndpoint = z.infer<typeof WebhookEndpoint>;

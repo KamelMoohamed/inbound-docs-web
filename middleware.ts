@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { cookieOptions } from "./lib/cookieOptions";
 
-const PUBLIC = ["/login", "/signup", "/forgot-password", "/reset-password", "/invitations"];
+const PUBLIC = [
+  "/", "/pricing", "/security", "/about", "/contact", "/integrations",
+  "/privacy", "/terms", "/sub-processors",
+  "/login", "/signup", "/forgot-password", "/reset-password", "/invitations",
+  "/verify-email", "/goodbye", "/mfa-enroll",
+];
 
 function isExpired(token: string): boolean {
   try {
@@ -12,10 +18,17 @@ function isExpired(token: string): boolean {
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  if (PUBLIC.some(p => pathname.startsWith(p))) return NextResponse.next();
-  if (pathname.startsWith("/api/")) return NextResponse.next(); // route handlers auth themselves
-
   const access = req.cookies.get("auth_access")?.value;
+
+  // Logged-in users hitting the marketing landing go straight to the app.
+  if (pathname === "/" && access && !isExpired(access)) {
+    return NextResponse.redirect(new URL("/inbox", req.url));
+  }
+  if (PUBLIC.some((p) => (p === "/" ? pathname === "/" : pathname.startsWith(p)))) {
+    return NextResponse.next();
+  }
+  if (pathname.startsWith("/api/") || pathname.startsWith("/auth/sso/")) return NextResponse.next();
+
   const refresh = req.cookies.get("auth_refresh")?.value;
 
   if (access && !isExpired(access)) return NextResponse.next();
@@ -29,7 +42,7 @@ export async function middleware(req: NextRequest) {
       if (res.ok) {
         const data = await res.json();
         const next = NextResponse.next();
-        const opts = { httpOnly: true, sameSite: "lax" as const, path: "/" };
+        const opts = cookieOptions();
         next.cookies.set("auth_access", data.access, opts);
         next.cookies.set("auth_refresh", data.refresh, opts);
         return next;

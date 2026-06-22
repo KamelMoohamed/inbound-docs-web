@@ -2,7 +2,8 @@ import "server-only";
 import { ReviewItem, ReviewDetail, Patient, Metrics, OrgUser, FailedDoc,
          BillingSummary, CreditTxn, Channel, HeldDoc, AuditEvent,
          PmsConnectionStatus, StuckDoc, PmsCatalogEntry,
-         NotificationFeed, Provider, EscalationPolicy, ReportSummary, OrgAuditEntry } from "./types";
+         NotificationFeed, Provider, EscalationPolicy, ReportSummary, OrgAuditEntry,
+         MeProfile, OnboardingStatus, SsoConfig, AdminTenant, WebhookEndpoint } from "./types";
 import { getSession } from "./auth";
 
 const BASE = process.env.BACKEND_URL!;
@@ -113,13 +114,50 @@ export const api = {
     const body = await get(`/org/audit?${q.toString()}`);
     return { items: OrgAuditEntry.array().parse(body.items ?? body), total: body.total ?? (body.items ?? body).length };
   },
+  me:             async () => MeProfile.parse(await get("/auth/me")),
+  resendVerification: () => post("/auth/resend-verification"),
+  onboarding:     async () => OnboardingStatus.parse(await get("/onboarding")),
+  dismissOnboarding: () => post("/onboarding/dismiss"),
+  getSso:           async () => SsoConfig.parse(await get("/org/sso")),
+  setSso:           async (body: Record<string, unknown>) =>
+                    fetch(`${BASE}/org/sso`, { method: "PUT", headers: await authHeaders(), body: JSON.stringify(body) }).then(r => r.json()),
+  exportData:       async () => {
+    const h = await authHeaders();
+    const r = await fetch(`${BASE}/org/export`, { headers: h, cache: "no-store" });
+    if (!r.ok) throw new Error(`GET /org/export → ${r.status}`);
+    return r.blob();
+  },
+  deleteOrg:        async (confirm: string) => {
+    const r = await fetch(`${BASE}/org`, { method: "DELETE", headers: await authHeaders(), body: JSON.stringify({ confirm }) });
+    if (!r.ok) throw new Error(`DELETE /org → ${r.status}`);
+    return r.json();
+  },
+  adminTenants:     async () => AdminTenant.array().parse(await get("/admin/tenants")),
+  adminTenant:      async (id: string) => AdminTenant.parse(await get(`/admin/tenants/${id}`)),
+  adminAdjustCredits: (id: string, amount: number, reason: string) =>
+                    post(`/admin/tenants/${id}/credits`, { amount, reason }),
+  adminImpersonate: async (id: string) =>
+                    post(`/admin/tenants/${id}/impersonate`) as Promise<{ access: string; refresh: string }>,
+  listWebhooks:     async () => WebhookEndpoint.array().parse(await get("/webhooks")),
+  createWebhook:    (body: { url: string; events: string[] }) => post("/webhooks", body) as Promise<{ endpoint: WebhookEndpoint; secret: string }>,
+  deleteWebhook:    async (id: string) => fetch(`${BASE}/webhooks/${id}`, { method: "DELETE", headers: await authHeaders() }).then(r => r.json()),
+  testWebhook:      (id: string) => post(`/webhooks/${id}/test`),
+  updateWebhook:    async (id: string, body: { active?: boolean }) =>
+                    fetch(`${BASE}/webhooks/${id}`, { method: "PATCH", headers: await authHeaders(), body: JSON.stringify(body) }).then(r => r.json()),
 };
 
 // Public (no auth) — used in server actions for login/signup
 export const publicApi = {
-  async signup(orgName: string, email: string, name: string, password: string) {
+  async signup(orgName: string, email: string, name: string, password: string, tos_accepted: boolean, privacy_accepted: boolean, dpa_accepted: boolean) {
     const r = await fetch(`${BASE}/auth/signup`, { method: "POST",
-      headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orgName, email, name, password }) });
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orgName, email, name, password, tos_accepted, privacy_accepted, dpa_accepted }) });
+    if (!r.ok) throw new Error(await r.text());
+    return r.json();
+  },
+  async verifyEmail(token: string) {
+    const r = await fetch(`${BASE}/auth/verify-email`, { method: "POST",
+      headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token }) });
     if (!r.ok) throw new Error(await r.text());
     return r.json();
   },
@@ -127,11 +165,15 @@ export const publicApi = {
     const r = await fetch(`${BASE}/auth/login`, { method: "POST",
       headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
     if (!r.ok) throw new Error("invalid credentials");
-    return r.json() as Promise<{ access?: string; refresh?: string; mfa_required?: boolean; mfaToken?: string }>;
+    return r.json() as Promise<{
+      access?: string; refresh?: string;
+      mfa_required?: boolean; mfa_token?: string; mfaToken?: string;
+      mfa_enrollment_required?: boolean; enrol_token?: string;
+    }>;
   },
   async mfaLogin(mfaToken: string, code: string) {
     const r = await fetch(`${BASE}/auth/mfa/login`, { method: "POST",
-      headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mfaToken, code }) });
+      headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mfa_token: mfaToken, code }) });
     if (!r.ok) throw new Error("invalid code");
     return r.json() as Promise<{ access: string; refresh: string }>;
   },
