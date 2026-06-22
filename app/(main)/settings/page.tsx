@@ -1,10 +1,12 @@
 "use client";
 import { useActionState } from "react";
 import { changePasswordAction, updateNameAction } from "./actions";
+import { ExportDataButton } from "./ExportDataButton";
 import { Card } from "@/components/ui/Card";
 import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
+import Link from "next/link";
 
 export default function SettingsPage() {
   const [state, action, pending] = useActionState(changePasswordAction, {});
@@ -12,6 +14,16 @@ export default function SettingsPage() {
   return (
     <section className="max-w-md space-y-6">
       <PageHeader title="Account settings" />
+      <nav className="flex flex-wrap gap-3 text-sm">
+        <Link href="/settings/sso" className="text-indigo-600 hover:underline">SSO</Link>
+        <Link href="/settings/webhooks" className="text-indigo-600 hover:underline">Webhooks</Link>
+        <Link href="/settings/danger" className="text-red-600 hover:underline">Danger zone</Link>
+      </nav>
+      <Card padding="p-6">
+        <h2 className="mb-4 text-base font-semibold text-slate-900">Export data</h2>
+        <p className="mb-3 text-sm text-slate-600">Download a zip archive of your organisation&apos;s data.</p>
+        <ExportDataButton />
+      </Card>
       <Card padding="p-6">
         <h2 className="mb-4 text-base font-semibold text-slate-900">Display name</h2>
         <form action={nameAction} className="space-y-3">

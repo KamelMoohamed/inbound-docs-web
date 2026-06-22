@@ -1,29 +1,29 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { NavMenu, NavMenuItem } from "./NavMenu";
 
-const links: [string, string][] = [
-  ["/", "Review"],
+// Primary daily-workflow links shown directly in the header.
+const primary: [string, string][] = [
   ["/upload", "Upload"],
-  ["/roster", "Roster"],
-  ["/providers", "Providers"],
+  ["/roster", "Patients"],
   ["/dashboard", "Dashboard"],
   ["/reports", "Reports"],
-  ["/org", "Org"],
-  ["/review/failed", "Failed"],
-  ["/billing", "Billing"],
-  ["/channels", "Channels"],
-  ["/settings/integrations", "Integrations"],
-  ["/settings", "Settings"],
 ];
 
 export function NavLinks() {
   const pathname = usePathname();
   return (
     <div className="flex items-center gap-1">
-      {links.map(([href, label]) => {
-        const active =
-          href === "/" ? pathname === "/" : pathname.startsWith(href);
+      {/* Review groups the inbox + its secondary queues. */}
+      <NavMenu label="Review" activePrefixes={["/inbox", "/review"]}>
+        <NavMenuItem href="/inbox" label="Inbox" />
+        <NavMenuItem href="/review/failed" label="Failed" />
+        <NavMenuItem href="/review/held" label="Held" />
+      </NavMenu>
+
+      {primary.map(([href, label]) => {
+        const active = pathname === href || pathname.startsWith(href + "/");
         return (
           <Link
             key={href}

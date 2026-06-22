@@ -1,19 +1,31 @@
 import { api } from "@/lib/api";
 import { Stat } from "@/components/Stat";
 import { OverdueBanner } from "@/components/OverdueBanner";
+import { OnboardingChecklist } from "@/components/OnboardingChecklist";
+import { dismissOnboardingAction } from "@/app/(main)/onboarding/actions";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 
 export const dynamic = "force-dynamic";
 
 export default async function Dashboard() {
-  const [m, billing] = await Promise.all([api.metrics(), api.billingSummary()]);
+  const [m, billing, onboarding] = await Promise.all([
+    api.metrics(),
+    api.billingSummary(),
+    api.onboarding().catch(() => null),
+  ]);
   const today = new Date().toLocaleDateString("en-AU", {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
   });
+  const showOnboarding = onboarding && !onboarding.complete && !onboarding.dismissed;
   return (
     <section>
       <PageHeader title="Practice dashboard" subtitle={today} />
+      {showOnboarding && (
+        <div className="mb-6">
+          <OnboardingChecklist status={onboarding} dismiss={dismissOnboardingAction} />
+        </div>
+      )}
       <OverdueBanner metrics={m} />
       <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
         <Stat label="In review" value={m.needs_review} accent="indigo" />
