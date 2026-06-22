@@ -2,6 +2,7 @@
 import { useActionState, useState } from "react";
 import { createChannelAction, type ChannelActionState } from "./actions";
 import { CredentialsPanel } from "@/components/CredentialsPanel";
+import { channelTypeLabel } from "@/lib/channels";
 
 const TYPES = ["email", "efax", "sftp", "fhir", "hl7", "secure_msg"];
 const COST: Record<string, string> = { email: "1", efax: "3–5/page", sftp: "1", fhir: "1", hl7: "1", secure_msg: "2" };
@@ -15,7 +16,7 @@ export function ChannelForm() {
         <label className="text-sm">Type
           <select name="type" value={type} onChange={(e) => setType(e.target.value)}
             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
-            {TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+            {TYPES.map((t) => <option key={t} value={t}>{channelTypeLabel(t)}</option>)}
           </select>
         </label>
         <label className="text-sm md:col-span-2">Label

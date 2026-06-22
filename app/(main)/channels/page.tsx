@@ -8,6 +8,7 @@ import { ChannelForm } from "./ChannelForm";
 import { RegenerateSecret } from "./RegenerateSecret";
 import { DeleteChannel } from "./DeleteChannel";
 import { toggleChannelAction } from "./actions";
+import { channelTypeLabel } from "@/lib/channels";
 
 const SECRET_TYPES = ["fhir", "hl7", "secure_msg", "sftp"];
 
@@ -35,7 +36,7 @@ export default async function ChannelsPage() {
             )}
             {channels.map((c) => (
               <tr key={c.id} className="border-b border-slate-100">
-                <td className="px-4 py-3 font-medium text-slate-800">{c.type}</td>
+                <td className="px-4 py-3 font-medium text-slate-800">{channelTypeLabel(c.type)}</td>
                 <td className="px-4 py-3 font-mono text-xs text-slate-600">{c.address}</td>
                 <td className="px-4 py-3 text-slate-600">{c.label ?? "—"}</td>
                 <td className="px-4 py-3">{c.active ? <Badge tone="ok">Active</Badge> : <Badge tone="muted">Paused</Badge>}</td>
