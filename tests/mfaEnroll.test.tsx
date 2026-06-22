@@ -10,7 +10,7 @@ describe("MfaEnroll", () => {
         otpauthUrl="otpauth://totp/test" secret="ABC123" />
     );
     expect(screen.getByText(/Secret: ABC123/)).toBeTruthy();
-    fireEvent.change(screen.getByLabelText(/mfa code/i), { target: { value: "123456" } });
+    fireEvent.change(screen.getByLabelText(/verification code/i), { target: { value: "123456" } });
     fireEvent.submit(screen.getByRole("button", { name: /verify/i }).closest("form")!);
     expect(verify).toHaveBeenCalled();
   });
