@@ -8,7 +8,7 @@
 
 **Tech Stack:** Next.js 16, React 19, server actions, zod 4, Tailwind v4, vitest + Testing Library.
 
-Depends on `inbound-docs-api/docs/superpowers/plans/2026-06-21-saas-platform-backend.md`.
+Depends on `clinidoc-api/docs/superpowers/plans/2026-06-21-saas-platform-backend.md`.
 
 ---
 

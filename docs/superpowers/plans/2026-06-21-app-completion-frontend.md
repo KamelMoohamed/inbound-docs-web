@@ -8,7 +8,7 @@
 
 **Tech Stack:** Next.js 16, React 19, server actions, zod 4, Tailwind v4, vitest + Testing Library, Playwright.
 
-Depends on `inbound-docs-api/docs/superpowers/plans/2026-06-21-app-completion-backend.md`. Reference roadmap: `inbound-docs-api/docs/superpowers/plans/2026-06-21-app-completion-roadmap.md`.
+Depends on `clinidoc-api/docs/superpowers/plans/2026-06-21-app-completion-backend.md`. Reference roadmap: `clinidoc-api/docs/superpowers/plans/2026-06-21-app-completion-roadmap.md`.
 
 ---
 

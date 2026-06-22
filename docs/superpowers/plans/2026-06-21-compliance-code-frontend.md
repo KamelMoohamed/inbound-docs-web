@@ -8,7 +8,7 @@
 
 **Tech Stack:** Next.js (App Router), React server components, server actions, vitest, Tailwind.
 
-**Pairs with:** `inbound-docs-api/docs/superpowers/plans/2026-06-21-compliance-code-backend.md` (Task 4 MFA enrollment; Task 2 sub-processor register).
+**Pairs with:** `clinidoc-api/docs/superpowers/plans/2026-06-21-compliance-code-backend.md` (Task 4 MFA enrollment; Task 2 sub-processor register).
 
 **Compliance mapping (doc §):**
 - Task 1 → §6 Encryption in transit (secure cookies), checklist #2
@@ -486,12 +486,12 @@ Expected: FAIL — module not found.
 
 ```typescript
 // lib/sub-processors.ts
-// Mirror of the backend register (inbound-docs-api/src/common/sub-processors.ts).
+// Mirror of the backend register (clinidoc-api/src/common/sub-processors.ts).
 // Keep in sync, or fetch from the API's read-only endpoint if/when exposed.
 export const SUB_PROCESSORS = [
   { name: "Anthropic", purpose: "AI document field extraction", location: "United States" },
   { name: "AWS", purpose: "Hosting, database, object storage, backups", location: "Australia (Sydney)" },
-  { name: "Telnyx", purpose: "Inbound/outbound fax", location: "United States" },
+  { name: "Telnyx", purpose: "Incoming/outbound fax", location: "United States" },
   { name: "SendGrid", purpose: "Transactional email", location: "United States" },
 ];
 ```

@@ -3,7 +3,7 @@
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 > **HOW TO FOLLOW THIS PLAN (read first).**
-> This plan **upgrades the existing Next.js web app** (`inbound-docs-web`) which is already migrated to JWT cookie auth. It adds: a **billing & credits** console (plan, balance, buy/upgrade via Stripe Checkout, transaction history), a **credit balance pill** in the nav, a **low-credit banner**, a **held-for-credits** queue view, **inbound-channel management**, a **usage** section on the dashboard, and an **account settings** page (change password).
+> This plan **upgrades the existing Next.js web app** (`clinidoc-web`) which is already migrated to JWT cookie auth. It adds: a **billing & credits** console (plan, balance, buy/upgrade via Stripe Checkout, transaction history), a **credit balance pill** in the nav, a **low-credit banner**, a **held-for-credits** queue view, **incoming-channel management**, a **usage** section on the dashboard, and an **account settings** page (change password).
 >
 > **Rules:** Do tasks in order; steps in order. When a step shows a file path + code block, create/modify that exact file with that exact code. When a step says **Run:**, run it and confirm the result. For tasks with tests, write the failing test first, see it fail, implement, see it pass, commit.
 >
@@ -20,7 +20,7 @@
 ```
 app/(main)/billing/page.tsx            # plan, balance, buy/upgrade, history (server component)
 app/(main)/billing/actions.ts          # checkoutAction, portalAction (redirect to Stripe)
-app/(main)/channels/page.tsx           # list inbound channels (server component)
+app/(main)/channels/page.tsx           # list incoming channels (server component)
 app/(main)/channels/actions.ts         # create/update/delete channel
 app/(main)/channels/ChannelForm.tsx    # client island: add-channel form
 app/(main)/review/held/page.tsx        # held-for-credits queue (server component)
@@ -422,7 +422,7 @@ import "../globals.css";
 import { Nav } from "@/components/Nav";
 import { LowCreditBanner } from "@/components/LowCreditBanner";
 
-export const metadata = { title: "Inbound Docs" };
+export const metadata = { title: "Incoming Docs" };
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -507,7 +507,7 @@ git commit -m "feat(web): held-for-credits queue page"
 
 ---
 
-## Task 7: Inbound channels management
+## Task 7: Incoming channels management
 
 **Files:**
 - Create: `app/(main)/channels/actions.ts`, `app/(main)/channels/page.tsx`, `app/(main)/channels/ChannelForm.tsx`
@@ -562,8 +562,8 @@ export function ChannelForm() {
           {TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
         </select>
       </label>
-      <label className="text-sm md:col-span-2">Inbound address
-        <input name="address" required placeholder="clinic@inbound.example.com"
+      <label className="text-sm md:col-span-2">Incoming address
+        <input name="address" required placeholder="clinic@incoming.example.com"
           className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
       </label>
       <label className="text-sm">Label
@@ -599,7 +599,7 @@ export default async function ChannelsPage() {
   const canManage = ["owner", "admin"].includes(session.role);
   return (
     <section className="space-y-6">
-      <PageHeader title="Inbound channels" />
+      <PageHeader title="Incoming channels" />
       <Card padding="p-0">
         <table className="w-full border-collapse text-sm">
           <thead>
@@ -636,7 +636,7 @@ export default async function ChannelsPage() {
       </Card>
       {canManage && (
         <Card padding="p-6">
-          <h2 className="mb-4 text-base font-semibold text-slate-900">Add an inbound channel</h2>
+          <h2 className="mb-4 text-base font-semibold text-slate-900">Add an incoming channel</h2>
           <ChannelForm />
         </Card>
       )}
@@ -648,7 +648,7 @@ export default async function ChannelsPage() {
 - [ ] **Step 4: Commit**
 ```bash
 git add "app/(main)/channels"
-git commit -m "feat(web): inbound channel management (list/add/pause/delete)"
+git commit -m "feat(web): incoming channel management (list/add/pause/delete)"
 ```
 
 ---

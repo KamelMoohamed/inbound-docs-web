@@ -20,12 +20,12 @@ export default async function ChannelsPage() {
   const canManage = ["owner", "admin"].includes(session.role);
   return (
     <section className="space-y-6">
-      <PageHeader title="Inbound channels" />
+      <PageHeader title="Incoming channels" />
       <Card padding="p-0">
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
-              <th className="px-4 py-3">Type</th><th className="px-4 py-3">Inbound address / number</th>
+              <th className="px-4 py-3">Type</th><th className="px-4 py-3">Incoming address / number</th>
               <th className="px-4 py-3">Label</th><th className="px-4 py-3">Status</th>
               {canManage && <th className="px-4 py-3"></th>}
             </tr>
@@ -56,7 +56,7 @@ export default async function ChannelsPage() {
       </Card>
       {canManage && (
         <Card padding="p-6">
-          <h2 className="mb-4 text-base font-semibold text-slate-900">Add an inbound channel</h2>
+          <h2 className="mb-4 text-base font-semibold text-slate-900">Add an incoming channel</h2>
           <ChannelForm />
         </Card>
       )}

@@ -23,7 +23,7 @@ export default function DpaPage() {
 
       <h2>2. Purpose &amp; scope</h2>
       <p>
-        We process inbound clinical documents to ingest, triage, match to a patient, flag urgency and queue them for
+        We process incoming clinical documents to ingest, triage, match to a patient, flag urgency and queue them for
         your staff to review and file. We do not use patient health information for any other purpose, and never to
         train models or for marketing.
       </p>

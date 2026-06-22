@@ -4,7 +4,7 @@ import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 
 export const metadata = {
   title: "CliniDoc — clinical document triage for Australian practices",
-  description: "Automatically triage, match and file inbound clinical documents. Onshore, encrypted, human-in-the-loop.",
+  description: "Automatically triage, match and file incoming clinical documents. Onshore, encrypted, human-in-the-loop.",
 };
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {

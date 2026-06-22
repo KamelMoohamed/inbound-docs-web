@@ -14,7 +14,7 @@
 >
 > **Prerequisites on the machine:** Node 20 or newer. Nothing else.
 
-**Goal:** A production-shaped Next.js review console for the inbound-document MVP: practice staff log in with a per-clinic key, work a confidence-gated review queue (urgent first), view the original document beside the AI-extracted fields, confirm or correct the patient/type in one or two clicks, upload documents, import a roster, and see a live ROI dashboard (auto-handled %, urgent backlog, throughput).
+**Goal:** A production-shaped Next.js review console for the incoming-document MVP: practice staff log in with a per-clinic key, work a confidence-gated review queue (urgent first), view the original document beside the AI-extracted fields, confirm or correct the patient/type in one or two clicks, upload documents, import a roster, and see a live ROI dashboard (auto-handled %, urgent backlog, throughput).
 
 **Architecture:** Next.js 14 **App Router**. Reads happen in **Server Components** that call the backend with a **server-only** API key (never shipped to the browser). Mutations happen via **Server Actions**; the original document image is streamed through a **Route Handler** proxy so the key stays server-side. Presentational components are pure and unit-tested; the end-to-end flow is covered by Playwright. Styling with Tailwind.
 
@@ -92,8 +92,8 @@ If both return JSON (not `404`), the prerequisite is met and you can continue to
 
 Run:
 ```bash
-npx create-next-app@latest inbound-docs-web --ts --app --tailwind --eslint --no-src-dir --import-alias "@/*"
-cd inbound-docs-web
+npx create-next-app@latest clinidoc-web --ts --app --tailwind --eslint --no-src-dir --import-alias "@/*"
+cd clinidoc-web
 npm i -D vitest @testing-library/react @testing-library/jest-dom jsdom @vitejs/plugin-react @playwright/test
 ```
 
@@ -474,7 +474,7 @@ const links = [["/", "Review"], ["/upload", "Upload"], ["/roster", "Roster"], ["
 export function Nav() {
   return (
     <nav className="flex gap-4 border-b border-slate-200 bg-white px-6 py-3 text-sm font-medium">
-      <span className="font-semibold text-slate-900">Inbound Docs</span>
+      <span className="font-semibold text-slate-900">Incoming Docs</span>
       {links.map(([href, label]) => (
         <Link key={href} href={href} className="text-slate-600 hover:text-slate-900">{label}</Link>
       ))}
@@ -490,7 +490,7 @@ export function Nav() {
 import "./globals.css";
 import { Nav } from "@/components/Nav";
 
-export const metadata = { title: "Inbound Docs" };
+export const metadata = { title: "Incoming Docs" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

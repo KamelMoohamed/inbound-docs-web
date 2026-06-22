@@ -20,7 +20,7 @@ const tiers: Tier[] = [
     docs: "2,000 documents / month",
     blurb: "Single-site practices getting started.",
     cta: { label: "Start free", href: "/signup" },
-    features: ["1 inbound channel", "PMS export mode", "Patient & provider matching", "Email support"],
+    features: ["1 incoming channel", "PMS export mode", "Patient & provider matching", "Email support"],
   },
   {
     name: "Growth",

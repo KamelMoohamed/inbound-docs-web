@@ -3,7 +3,7 @@
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 > **HOW TO FOLLOW THIS PLAN (read first).**
-> This plan **upgrades the existing Next.js web app** (`inbound-docs-web`). It finishes the UI for the “feature completion” backend plan: **channel setup shows system-generated credentials** (the user no longer types an address) with copy buttons + secret rotation; the **review screens show the matched patient’s name** instead of a UUID; **the roster table gets manual add/edit/delete**; the **document detail gets a “change type” control** and an **audit-trail panel**; and **settings can update the display name**.
+> This plan **upgrades the existing Next.js web app** (`clinidoc-web`). It finishes the UI for the “feature completion” backend plan: **channel setup shows system-generated credentials** (the user no longer types an address) with copy buttons + secret rotation; the **review screens show the matched patient’s name** instead of a UUID; **the roster table gets manual add/edit/delete**; the **document detail gets a “change type” control** and an **audit-trail panel**; and **settings can update the display name**.
 >
 > **Rules:** Do tasks in order; steps in order. When a step shows a file path + code block, create/modify that exact file with that exact code. When a step says **Run:**, run it and confirm the result. For test tasks (pure helpers/components), write the failing test first, see it fail, implement, see it pass, commit.
 >
@@ -111,9 +111,9 @@ import { expect, test } from "vitest";
 import { CopyField } from "@/components/CopyField";
 
 test("renders the label and value", () => {
-  render(<CopyField label="Forwarding address" value="docs-abc@inbound.test" />);
+  render(<CopyField label="Forwarding address" value="docs-abc@incoming.test" />);
   expect(screen.getByText("Forwarding address")).toBeTruthy();
-  expect((screen.getByDisplayValue("docs-abc@inbound.test"))).toBeTruthy();
+  expect((screen.getByDisplayValue("docs-abc@incoming.test"))).toBeTruthy();
   expect(screen.getByRole("button", { name: /copy/i })).toBeTruthy();
 });
 ```
@@ -262,7 +262,7 @@ export function ChannelForm() {
           {pending ? "Creating…" : "Create channel"}
         </button>
         <p className="text-xs text-slate-500 md:col-span-4">
-          We generate the inbound address & secret for you. Cost per document on this channel: <strong>{COST[type]}</strong> credit(s).
+          We generate the incoming address & secret for you. Cost per document on this channel: <strong>{COST[type]}</strong> credit(s).
         </p>
       </form>
       {state.error && <p className="text-sm text-red-600">{state.error}</p>}

@@ -40,7 +40,7 @@ export function WebhookForm({
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           aria-label="URL"
-          placeholder="https://hooks.example.com/inbound"
+          placeholder="https://hooks.example.com/incoming"
           className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
         />
       </FormField>

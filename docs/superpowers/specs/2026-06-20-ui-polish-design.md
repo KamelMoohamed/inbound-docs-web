@@ -1,4 +1,4 @@
-# UI Polish Design — Inbound Docs Web
+# UI Polish Design — Incoming Docs Web
 
 **Date:** 2026-06-20  
 **Status:** Approved  
@@ -40,7 +40,7 @@ Upgrade the existing minimal Tailwind UI to a polished modern SaaS aesthetic. Th
 
 ### Top bar
 - Height: `h-14`, full-width white, `border-b border-slate-200`
-- Left: "Inbound Docs" wordmark in `text-indigo-600 font-semibold`
+- Left: "Incoming Docs" wordmark in `text-indigo-600 font-semibold`
 - Centre: nav links — active gets `text-indigo-600` + bottom border `border-b-2 border-indigo-600`, inactive is `text-slate-500 hover:text-slate-900`
 - Right: `text-xs text-slate-500` email, role Badge pill, `|` divider, `text-red-600` Logout button
 
@@ -96,7 +96,7 @@ Renders: `<label>` in `text-sm font-medium text-slate-700 mb-1`, children, optio
 - `app/layout.tsx` is unchanged; it only applies to routes outside `(auth)`
 
 ### Card structure (top → bottom)
-1. "Inbound Docs" in `text-xl font-semibold text-indigo-600`
+1. "Incoming Docs" in `text-xl font-semibold text-indigo-600`
 2. Page title in `text-lg font-semibold text-slate-900` (e.g. "Sign in")
 3. Subtitle in `text-sm text-slate-500` (e.g. "Welcome back")
 4. Error banner: `rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3` — shown when action returns an error

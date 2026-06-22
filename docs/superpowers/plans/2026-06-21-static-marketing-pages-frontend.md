@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build the public-facing site for inbound-docs — a marketing landing, pricing, security/compliance, about, and contact pages, plus finished legal pages (privacy/terms/sub-processors) — under a shared, branded public layout, and free up `/` for the landing by moving the authenticated app to `/inbox`.
+**Goal:** Build the public-facing site for clinidoc — a marketing landing, pricing, security/compliance, about, and contact pages, plus finished legal pages (privacy/terms/sub-processors) — under a shared, branded public layout, and free up `/` for the landing by moving the authenticated app to `/inbox`.
 
 **Architecture:** A new `(marketing)` App Router group owns all public routes with its own root layout (header + footer). The authenticated app stays in `(main)` but its inbox moves from `/` to `/inbox`. `middleware.ts` is updated so marketing routes are public and logged-in visitors hitting `/` are redirected into the app. Pages are server components using a small set of marketing UI primitives; existing `components/ui/*` (Button, Card) are reused.
 
@@ -111,7 +111,7 @@ export function MarketingHeader() {
   return (
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <Link href="/" className="text-lg font-semibold text-indigo-600">Inbound Docs</Link>
+        <Link href="/" className="text-lg font-semibold text-indigo-600">Incoming Docs</Link>
         <nav className="hidden items-center gap-6 md:flex">
           {nav.map(([href, label]) => (
             <Link key={href} href={href} className="text-sm font-medium text-slate-600 hover:text-slate-900">{label}</Link>
@@ -144,7 +144,7 @@ export function MarketingFooter() {
     <footer className="border-t border-slate-200 bg-slate-50">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 py-12 md:grid-cols-4">
         <div>
-          <div className="text-base font-semibold text-indigo-600">Inbound Docs</div>
+          <div className="text-base font-semibold text-indigo-600">Incoming Docs</div>
           <p className="mt-2 text-sm text-slate-500">Clinical document triage and filing for Australian practices.</p>
         </div>
         {cols.map(([title, links]) => (
@@ -159,7 +159,7 @@ export function MarketingFooter() {
         ))}
       </div>
       <div className="border-t border-slate-200 px-6 py-6 text-center text-xs text-slate-400">
-        © {new Date().getFullYear()} Inbound Docs. Hosted in Australia.
+        © {new Date().getFullYear()} Incoming Docs. Hosted in Australia.
       </div>
     </footer>
   );
@@ -175,8 +175,8 @@ import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 
 export const metadata = {
-  title: "Inbound Docs — clinical document triage for Australian practices",
-  description: "Automatically triage, match and file inbound clinical documents. Onshore, encrypted, human-in-the-loop.",
+  title: "Incoming Docs — clinical document triage for Australian practices",
+  description: "Automatically triage, match and file incoming clinical documents. Onshore, encrypted, human-in-the-loop.",
 };
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
@@ -344,7 +344,7 @@ export function Hero() {
     <div className="bg-gradient-to-b from-indigo-50 to-white">
       <div className="mx-auto max-w-6xl px-6 py-24 text-center">
         <h1 className="mx-auto max-w-3xl text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-          Inbound clinical documents, triaged and filed — automatically.
+          Incoming clinical documents, triaged and filed — automatically.
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-600">
           Faxes, emails, pathology and specialist letters arrive, get matched to the right patient and
@@ -447,7 +447,7 @@ import { CTA } from "@/components/marketing/CTA";
 
 const tiers = [
   { name: "Starter", price: "A$—/mo", blurb: "Single-site practices getting started.",
-    features: ["1 inbound channel", "Up to N documents/mo", "PMS export mode", "Email support"] },
+    features: ["1 incoming channel", "Up to N documents/mo", "PMS export mode", "Email support"] },
   { name: "Growth", price: "A$—/mo", featured: true, blurb: "Busy practices that want write-back.",
     features: ["Multiple channels", "Higher document volume", "PMS write-back", "Urgent escalation", "Priority support"] },
   { name: "Scale", price: "Contact us", blurb: "Groups, PHNs and hospital workflows.",
@@ -563,13 +563,13 @@ import { CTA } from "@/components/marketing/CTA";
 export default function AboutPage() {
   return (
     <Section className="max-w-3xl">
-      <h1 className="text-3xl font-bold text-slate-900">About Inbound Docs</h1>
+      <h1 className="text-3xl font-bold text-slate-900">About Incoming Docs</h1>
       <div className="prose prose-slate mt-6">
-        <p>Australian medical practices receive a relentless stream of inbound documents — pathology and
+        <p>Australian medical practices receive a relentless stream of incoming documents — pathology and
         radiology results, specialist letters, discharge summaries, referrals — across fax, email and secure
         messaging. Sorting, matching and filing them by hand is slow, error-prone, and a patient-safety risk
         when urgent results are missed.</p>
-        <p>Inbound Docs triages that stream automatically and files it into your practice software, with a
+        <p>Incoming Docs triages that stream automatically and files it into your practice software, with a
         person confirming every document. We built it onshore, privacy-first, and for the realities of
         Australian clinical workflows.</p>
         <h2>Our principles</h2>
@@ -661,7 +661,7 @@ export default function ContactPage() {
   return (
     <Section className="max-w-xl">
       <h1 className="text-3xl font-bold text-slate-900">Book a demo</h1>
-      <p className="mt-3 text-slate-600">Tell us about your practice and we’ll show you Inbound Docs on your workflow.</p>
+      <p className="mt-3 text-slate-600">Tell us about your practice and we’ll show you Incoming Docs on your workflow.</p>
       <div className="mt-8"><ContactForm /></div>
     </Section>
   );
@@ -691,10 +691,10 @@ export default function TermsPage() {
       <p className="text-sm text-slate-500">Last updated: 21 June 2026. <em>Owner: have these reviewed by an Australian lawyer before go-live.</em></p>
 
       <h2>1. Agreement</h2>
-      <p>These terms govern your use of the Inbound Docs service operated by [legal entity, ABN]. By creating an account you accept these terms and our <a href="/privacy">Privacy Policy</a>.</p>
+      <p>These terms govern your use of the Incoming Docs service operated by [legal entity, ABN]. By creating an account you accept these terms and our <a href="/privacy">Privacy Policy</a>.</p>
 
       <h2>2. The service</h2>
-      <p>Inbound Docs ingests, triages, matches and files clinical documents on behalf of your practice. AI-assisted output is reviewed and confirmed by your staff before filing. The service does not provide medical advice.</p>
+      <p>Incoming Docs ingests, triages, matches and files clinical documents on behalf of your practice. AI-assisted output is reviewed and confirmed by your staff before filing. The service does not provide medical advice.</p>
 
       <h2>3. Your responsibilities</h2>
       <p>You are responsible for obtaining patient consent as required, for the accuracy of your roster, for reviewing documents before filing, and for maintaining the security of your account credentials and MFA.</p>

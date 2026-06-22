@@ -28,7 +28,7 @@ export function ChannelForm() {
           {pending ? "Creating…" : "Create channel"}
         </button>
         <p className="text-xs text-slate-500 md:col-span-4">
-          We generate the inbound address &amp; secret for you. Cost per document on this channel: <strong>{COST[type]}</strong> credit(s).
+          We generate the incoming address &amp; secret for you. Cost per document on this channel: <strong>{COST[type]}</strong> credit(s).
         </p>
       </form>
       {state.error && <p className="text-sm text-red-600">{state.error}</p>}

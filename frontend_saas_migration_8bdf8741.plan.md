@@ -77,11 +77,11 @@ isProject: false
 # Frontend Plan — Multi-Tenant SaaS (Next.js)
 
 > **HOW TO FOLLOW THIS PLAN (read first).**
-> This plan **upgrades the existing MVP frontend** to match the new SaaS backend (`inbound-docs-api` after the 2026-06-20 auth plan). The backend is already built and running.
+> This plan **upgrades the existing MVP frontend** to match the new SaaS backend (`clinidoc-api` after the 2026-06-20 auth plan). The backend is already built and running.
 >
 > **Rules:** Do tasks in order. Write exact files shown. Where a task has a test, run it red → implement → run it green. Use the precise names shown — later tasks depend on them.
 >
-> **Prerequisites:** Node 20+. The backend (`inbound-docs-api`) must be running on `http://localhost:8000`.
+> **Prerequisites:** Node 20+. The backend (`clinidoc-api`) must be running on `http://localhost:8000`.
 
 ---
 
@@ -431,7 +431,7 @@ export async function Nav() {
   const session = await getSession();
   return (
     <nav className="flex items-center gap-4 border-b border-slate-200 bg-white px-6 py-3 text-sm font-medium">
-      <span className="font-semibold text-slate-900">Inbound Docs</span>
+      <span className="font-semibold text-slate-900">Incoming Docs</span>
       {links.map(([href, label]) => (
         <Link key={href} href={href} className="text-slate-600 hover:text-slate-900">{label}</Link>
       ))}

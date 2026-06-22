@@ -5,7 +5,7 @@ export function Hero() {
     <div className="bg-gradient-to-b from-indigo-50 to-white">
       <div className="mx-auto max-w-6xl px-6 py-24 text-center">
         <h1 className="mx-auto max-w-3xl text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-          Inbound clinical documents, triaged and filed — automatically.
+          Incoming clinical documents, triaged and filed — automatically.
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-600">
           Faxes, emails, pathology and specialist letters arrive, get matched to the right patient and

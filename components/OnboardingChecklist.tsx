@@ -4,7 +4,7 @@ import type { OnboardingStatus } from "@/lib/types";
 
 const STEPS: { key: keyof OnboardingStatus; label: string; href: string; linkLabel: string }[] = [
   { key: "email_verified", label: "Verify your email", href: "/settings", linkLabel: "Settings" },
-  { key: "has_channel", label: "Set up an inbound channel", href: "/channels", linkLabel: "Channels" },
+  { key: "has_channel", label: "Set up an incoming channel", href: "/channels", linkLabel: "Channels" },
   { key: "has_patients", label: "Import your patient roster", href: "/roster", linkLabel: "Roster" },
   { key: "pms_connected", label: "Connect your PMS", href: "/settings/integrations", linkLabel: "Integrations" },
   { key: "has_subscription", label: "Choose a subscription plan", href: "/billing", linkLabel: "Billing" },

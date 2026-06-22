@@ -8,7 +8,7 @@
 
 **Tech Stack:** Next.js 16, React 19, server actions, zod 4, Tailwind v4, vitest + Testing Library, Playwright.
 
-Depends on the backend plan `inbound-docs-api/docs/superpowers/plans/2026-06-21-pms-integration-backend.md` being implemented (endpoints under `/pms`). Reference design: `inbound-docs-api/docs/superpowers/specs/2026-06-21-pms-integration-design.md`.
+Depends on the backend plan `clinidoc-api/docs/superpowers/plans/2026-06-21-pms-integration-backend.md` being implemented (endpoints under `/pms`). Reference design: `clinidoc-api/docs/superpowers/specs/2026-06-21-pms-integration-design.md`.
 
 ---
 

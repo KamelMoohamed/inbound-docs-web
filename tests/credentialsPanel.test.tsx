@@ -3,8 +3,8 @@ import { expect, test } from "vitest";
 import { CredentialsPanel } from "@/components/CredentialsPanel";
 
 test("permanent detail (no secret) → no one-time warning", () => {
-  render(<CredentialsPanel setup={{ kind: "email", instructions: "Forward here.", fields: { "Forwarding address": "docs-a@inbound.test" } }} />);
-  expect(screen.getByDisplayValue("docs-a@inbound.test")).toBeTruthy();
+  render(<CredentialsPanel setup={{ kind: "email", instructions: "Forward here.", fields: { "Forwarding address": "docs-a@incoming.test" } }} />);
+  expect(screen.getByDisplayValue("docs-a@incoming.test")).toBeTruthy();
   expect(screen.queryByText(/shown once/i)).toBeNull();
 });
 

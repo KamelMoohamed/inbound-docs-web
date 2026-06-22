@@ -11,7 +11,7 @@ export default function AboutPage() {
     <Section className="max-w-3xl">
       <h1 className="text-3xl font-bold text-slate-900">About CliniDoc</h1>
       <div className="prose prose-slate mt-6">
-        <p>Australian medical practices receive a relentless stream of inbound documents — pathology and
+        <p>Australian medical practices receive a relentless stream of incoming documents — pathology and
         radiology results, specialist letters, discharge summaries, referrals — across fax, email and secure
         messaging. Sorting, matching and filing them by hand is slow, error-prone, and a patient-safety risk
         when urgent results are missed.</p>

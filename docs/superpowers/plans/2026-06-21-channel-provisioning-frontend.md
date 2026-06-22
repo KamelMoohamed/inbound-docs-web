@@ -3,7 +3,7 @@
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 > **HOW TO FOLLOW THIS PLAN (read first).**
-> This plan **adjusts the channels UI** to the new provisioning model in the backend (`2026-06-21-channel-provisioning-backend.md`). The clinic no longer wires their own provider: on create, the backend returns the **real inbound address (email) or a real fax number (fax)** — and **no customer-facing secret** for those types. The UI must:
+> This plan **adjusts the channels UI** to the new provisioning model in the backend (`2026-06-21-channel-provisioning-backend.md`). The clinic no longer wires their own provider: on create, the backend returns the **real incoming address (email) or a real fax number (fax)** — and **no customer-facing secret** for those types. The UI must:
 > - Present the returned address/number as a **permanent detail** (not a "copy-once secret") for email and fax.
 > - Still present **URL + bearer token** for fhir/hl7/secure_msg, and **host/user/password** for sftp.
 > - **Only offer "rotate secret"** for token/sftp channels (email/fax have no rotatable customer secret — the backend rejects it).
@@ -50,8 +50,8 @@ import { expect, test } from "vitest";
 import { CredentialsPanel } from "@/components/CredentialsPanel";
 
 test("permanent detail (no secret) → no one-time warning", () => {
-  render(<CredentialsPanel setup={{ kind: "email", instructions: "Forward here.", fields: { "Forwarding address": "docs-a@inbound.test" } }} />);
-  expect(screen.getByText("docs-a@inbound.test")).toBeTruthy();
+  render(<CredentialsPanel setup={{ kind: "email", instructions: "Forward here.", fields: { "Forwarding address": "docs-a@incoming.test" } }} />);
+  expect(screen.getByText("docs-a@incoming.test")).toBeTruthy();
   expect(screen.queryByText(/shown once/i)).toBeNull();
 });
 
@@ -151,7 +151,7 @@ In `app/(main)/channels/page.tsx`:
 ```tsx
 const SECRET_TYPES = ["fhir", "hl7", "secure_msg", "sftp"];
 ```
-3. In the channel row, make the **address** column read as the inbound detail (it already shows `c.address`; relabel the column header from “Address” to “Inbound address / number”).
+3. In the channel row, make the **address** column read as the incoming detail (it already shows `c.address`; relabel the column header from “Address” to “Incoming address / number”).
 4. Replace the per-row actions cell so rotate-secret only shows for `SECRET_TYPES`, and delete uses the new component:
 ```tsx
                 {canManage && (
@@ -173,7 +173,7 @@ Run (backend running, logged in): open `/channels`. Create an **email** channel 
 - [ ] **Step 3: Commit**
 ```bash
 git add "app/(main)/channels/page.tsx"
-git commit -m "feat(web): channels list shows inbound address/number; rotate-secret only for token types"
+git commit -m "feat(web): channels list shows incoming address/number; rotate-secret only for token types"
 ```
 
 ---

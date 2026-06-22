@@ -1,6 +1,6 @@
-# inbound-docs-web
+# clinidoc-web
 
-Next.js (App Router) review console for the inbound-document SaaS platform.
+Next.js (App Router) review console for the incoming-document SaaS platform.
 
 ## Getting started
 
@@ -44,7 +44,7 @@ The browser **never sees the JWT** — tokens live only in httpOnly cookies. `li
 | `/dashboard` | ROI metrics — auto-handled %, urgent backlog, filed total, credit balance & usage |
 | `/org` | Team management — list users, invite, toggle role, remove, rotate ingestion key |
 | `/billing` | Billing & credits — current balance, plan tiers, Stripe Checkout/Portal, transaction history |
-| `/channels` | Inbound channel management — backend-provisioned: email shows a forwarding address; fax shows a dedicated number (deleting releases the number upstream, requires confirmation); token/sftp types (fhir, hl7, secure_msg, sftp) show URL + bearer token / host+credentials (rotatable, shown once); email/fax have no rotatable secret |
+| `/channels` | Incoming channel management — backend-provisioned: email shows a forwarding address; fax shows a dedicated number (deleting releases the number upstream, requires confirmation); token/sftp types (fhir, hl7, secure_msg, sftp) show URL + bearer token / host+credentials (rotatable, shown once); email/fax have no rotatable secret |
 | `/settings` | Account settings — update display name, change password |
 | `/providers` | Provider directory — add, edit, activate/deactivate providers for assignment |
 | `/reports` | Reports dashboard — mis-file rate, turnaround, auto-file %, SLA adherence, per-provider throughput |
@@ -98,10 +98,10 @@ npm run e2e
 Build a Docker image:
 
 ```bash
-docker build -t inbound-docs-web .
+docker build -t clinidoc-web .
 docker run -p 3000:3000 \
   -e BACKEND_URL=https://your-backend \
-  inbound-docs-web
+  clinidoc-web
 ```
 
 `BACKEND_URL` is supplied as an environment variable to the running container — never baked into the image.
