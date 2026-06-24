@@ -4,7 +4,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const { id } = await params;
   const access = req.cookies.get("auth_access")?.value;
   if (!access) return new Response("unauthorized", { status: 401 });
-  const upstream = await fetch(`${process.env.BACKEND_URL}/review/${id}/raw`, {
+  const upstream = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/review/${id}/raw`, {
     headers: { Authorization: `Bearer ${access}` }, cache: "no-store" });
   if (!upstream.ok) return new Response("not found", { status: upstream.status });
   const buf = await upstream.arrayBuffer();

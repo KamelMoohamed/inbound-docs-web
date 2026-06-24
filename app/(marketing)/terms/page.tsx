@@ -1,6 +1,11 @@
 import { LegalDoc } from "@/components/marketing/LegalDoc";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Terms of Service — CliniDoc" };
+export const metadata = pageMetadata({
+  title: "Terms of Service",
+  description: "The terms governing your use of the CliniDoc clinical document triage service.",
+  path: "/terms",
+});
 
 const link = "font-medium text-indigo-600 hover:text-indigo-700";
 

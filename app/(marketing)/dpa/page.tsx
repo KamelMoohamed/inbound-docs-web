@@ -1,6 +1,11 @@
 import { LegalDoc } from "@/components/marketing/LegalDoc";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Data Processing Agreement — CliniDoc" };
+export const metadata = pageMetadata({
+  title: "Data Processing Agreement",
+  description: "How CliniDoc processes personal and health information on behalf of your practice as a data processor.",
+  path: "/dpa",
+});
 
 const link = "font-medium text-indigo-600 hover:text-indigo-700";
 

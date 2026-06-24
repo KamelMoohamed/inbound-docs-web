@@ -8,6 +8,7 @@ import { Badge } from "./Badge";
 import { CreditPill } from "@/components/CreditPill";
 import { NotificationBell } from "./NotificationBell";
 import { markNotifReadAction, markAllReadAction } from "@/app/(main)/notifications/actions";
+import { Brand } from "@/components/Brand";
 
 export async function Nav() {
   const session = await getSession();
@@ -17,7 +18,7 @@ export async function Nav() {
   }
   return (
     <nav className="flex h-14 items-center gap-4 border-b border-slate-200 bg-white px-6">
-      <span className="mr-4 font-semibold text-indigo-600">CliniDoc</span>
+      <Brand href="/" iconSize={24} textClass="text-base" className="mr-4" />
       <NavLinks />
       {session && (
         <div className="ml-auto flex items-center gap-3">

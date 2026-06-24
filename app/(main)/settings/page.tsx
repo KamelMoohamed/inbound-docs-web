@@ -1,16 +1,19 @@
 "use client";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { changePasswordAction, updateNameAction } from "./actions";
 import { ExportDataButton } from "./ExportDataButton";
 import { Card } from "@/components/ui/Card";
 import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { PasswordRequirements } from "@/components/PasswordRequirements";
+import { isPasswordValid } from "@/lib/password";
 import Link from "next/link";
 
 export default function SettingsPage() {
   const [state, action, pending] = useActionState(changePasswordAction, {});
   const [nameState, nameAction, namePending] = useActionState(updateNameAction, {});
+  const [newPassword, setNewPassword] = useState("");
   return (
     <section className="max-w-md space-y-6">
       <PageHeader title="Account settings" />
@@ -44,11 +47,13 @@ export default function SettingsPage() {
           </FormField>
           <FormField label="New password">
             <input name="newPassword" type="password" required minLength={8}
+              value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
               className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+            <PasswordRequirements password={newPassword} />
           </FormField>
           {state.error && <p className="text-sm text-red-600">{state.error}</p>}
           {state.ok && <p className="text-sm text-emerald-600">Password updated. Other sessions were signed out.</p>}
-          <Button type="submit" variant="primary" disabled={pending}>{pending ? "Saving…" : "Update password"}</Button>
+          <Button type="submit" variant="primary" disabled={pending || !isPasswordValid(newPassword)}>{pending ? "Saving…" : "Update password"}</Button>
         </form>
       </Card>
     </section>

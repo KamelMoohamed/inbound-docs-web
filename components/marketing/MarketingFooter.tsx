@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { Brand } from "@/components/Brand";
 
 const cols: [string, [string, string][]][] = [
   ["Product", [["/pricing", "Pricing"], ["/integrations", "Integrations"], ["/security", "Security"]]],
   ["Company", [["/about", "About"], ["/contact", "Contact"]]],
-  ["Legal", [["/privacy", "Privacy"], ["/terms", "Terms"], ["/sub-processors", "Sub-processors"]]],
+  ["Legal", [["/privacy", "Privacy"], ["/terms", "Terms"], ["/dpa", "DPA"], ["/sub-processors", "Sub-processors"]]],
 ];
 
 export function MarketingFooter() {
@@ -11,7 +12,7 @@ export function MarketingFooter() {
     <footer className="border-t border-slate-200 bg-slate-50">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 py-12 md:grid-cols-4">
         <div>
-          <div className="text-base font-semibold text-indigo-600">CliniDoc</div>
+          <Brand href={null} iconSize={26} textClass="text-base" />
           <p className="mt-2 text-sm text-slate-500">Clinical document triage and filing for Australian practices.</p>
         </div>
         {cols.map(([title, links]) => (

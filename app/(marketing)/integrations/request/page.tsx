@@ -1,11 +1,23 @@
 import { RequestForm } from "./RequestForm";
 import { submitRequest } from "./actions";
+import { pageMetadata } from "@/lib/seo";
 
-export default async function RequestPage({ searchParams }: { searchParams: Promise<{ submitted?: string }> }) {
-  const { submitted } = await searchParams;
+export const metadata = pageMetadata({
+  title: "Request a PMS integration",
+  description: "Tell us which practice management system you use and we'll prioritise building the integration.",
+  path: "/integrations/request",
+});
+
+export default async function RequestPage({ searchParams }: { searchParams: Promise<{ submitted?: string; error?: string }> }) {
+  const { submitted, error } = await searchParams;
   return (
     <main className="max-w-2xl mx-auto p-8 flex flex-col gap-4">
       <h1 className="text-2xl font-bold">Request a PMS integration</h1>
+      {error && (
+        <div className="rounded-lg bg-red-50 border border-red-200 p-4">
+          <p className="text-sm text-red-700">One or more fields were too long. Please shorten them and try again.</p>
+        </div>
+      )}
       {submitted ? (
         <div className="rounded-lg bg-green-50 border border-green-200 p-4">
           <p className="font-medium">Thanks — we&apos;ve logged your request.</p>

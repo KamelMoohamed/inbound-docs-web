@@ -1,6 +1,8 @@
 import "../globals.css";
+import { noindexMetadata, baseViewport } from "@/lib/seo";
 
-export const metadata = { title: "CliniDoc" };
+export const metadata = { ...noindexMetadata, title: "CliniDoc" };
+export const viewport = baseViewport;
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (

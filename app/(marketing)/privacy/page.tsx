@@ -1,10 +1,12 @@
 import { LegalDoc } from "@/components/marketing/LegalDoc";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Privacy Policy — CliniDoc",
+export const metadata = pageMetadata({
+  title: "Privacy Policy",
   description:
     "How we handle personal and health information under the Privacy Act 1988 (Cth) and the Australian Privacy Principles.",
-};
+  path: "/privacy",
+});
 
 const link = "font-medium text-indigo-600 hover:text-indigo-700";
 

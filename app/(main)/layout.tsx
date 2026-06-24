@@ -4,8 +4,10 @@ import { LowCreditBanner } from "@/components/LowCreditBanner";
 import { VerifyBanner } from "@/components/VerifyBanner";
 import { BillingBanner } from "@/components/BillingBanner";
 import { ImpersonatingBanner } from "@/components/ImpersonatingBanner";
+import { noindexMetadata, baseViewport } from "@/lib/seo";
 
-export const metadata = { title: "CliniDoc" };
+export const metadata = { ...noindexMetadata, title: "CliniDoc" };
+export const viewport = baseViewport;
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (

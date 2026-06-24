@@ -1,10 +1,12 @@
 import { Section } from "@/components/marketing/Section";
 import { CTA } from "@/components/marketing/CTA";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "About — CliniDoc",
+export const metadata = pageMetadata({
+  title: "About",
   description: "Clinical document triage built onshore for Australian medical practices.",
-};
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

@@ -2,7 +2,7 @@
 import { redirect } from "next/navigation";
 import { setAuthCookies } from "@/lib/auth";
 
-const BASE = process.env.BACKEND_URL!;
+const BASE = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
 export async function startEnroll(enrolToken: string) {
   const r = await fetch(`${BASE}/auth/mfa/enrol/setup`, {

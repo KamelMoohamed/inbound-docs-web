@@ -6,7 +6,7 @@ import { ReviewItem, ReviewDetail, Patient, Metrics, OrgUser, FailedDoc,
          MeProfile, OnboardingStatus, SsoConfig, AdminTenant, WebhookEndpoint } from "./types";
 import { getSession } from "./auth";
 
-const BASE = process.env.BACKEND_URL!;
+const BASE = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
 async function authHeaders() {
   const session = await getSession();

@@ -3,18 +3,23 @@ import { useActionState, useState } from "react";
 import { signupAction } from "./actions";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
+import { Brand } from "@/components/Brand";
+import { PasswordRequirements } from "@/components/PasswordRequirements";
+import { isPasswordValid } from "@/lib/password";
+import { withNetworkGuard } from "@/lib/formAction";
 
 export default function SignupPage() {
-  const [state, action, pending] = useActionState(signupAction, null);
+  const [state, action, pending] = useActionState(withNetworkGuard(signupAction), null);
   const [tos, setTos] = useState(false);
   const [privacy, setPrivacy] = useState(false);
   const [dpa, setDpa] = useState(false);
-  const canSubmit = tos && privacy && dpa;
+  const [password, setPassword] = useState("");
+  const canSubmit = tos && privacy && dpa && isPasswordValid(password);
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-slate-50">
       <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-        <p className="text-xl font-semibold text-indigo-600">CliniDoc</p>
+        <Brand href={null} iconSize={30} textClass="text-xl" />
         <h1 className="mt-2 text-lg font-semibold text-slate-900">Create your organisation</h1>
         <p className="mt-1 text-sm text-slate-500">Get started in seconds</p>
 
@@ -31,6 +36,7 @@ export default function SignupPage() {
               placeholder="Acme Clinic"
               required
               minLength={2}
+              maxLength={100}
               className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
             />
           </FormField>
@@ -39,6 +45,7 @@ export default function SignupPage() {
               name="name"
               placeholder="Jane Smith"
               required
+              maxLength={100}
               className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
             />
           </FormField>
@@ -48,6 +55,7 @@ export default function SignupPage() {
               type="email"
               placeholder="you@example.com"
               required
+              maxLength={254}
               className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
             />
           </FormField>
@@ -58,8 +66,11 @@ export default function SignupPage() {
               placeholder="Min 8 characters"
               required
               minLength={8}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
             />
+            <PasswordRequirements password={password} />
           </FormField>
           <input type="hidden" name="tos_accepted" value={tos ? "true" : "false"} />
           <input type="hidden" name="privacy_accepted" value={privacy ? "true" : "false"} />

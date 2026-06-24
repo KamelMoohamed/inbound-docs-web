@@ -35,7 +35,7 @@ export async function middleware(req: NextRequest) {
 
   if (refresh) {
     try {
-      const res = await fetch(`${process.env.BACKEND_URL}/auth/refresh`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refresh }),
       });
@@ -52,4 +52,11 @@ export async function middleware(req: NextRequest) {
   return NextResponse.redirect(new URL("/login", req.url));
 }
 
-export const config = { matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"] };
+export const config = {
+  matcher: [
+    // Run on everything except Next internals, the favicon, static assets served
+    // from /public (images, fonts), and the public SEO metadata routes
+    // (robots/sitemap/manifest/social-card) — those must bypass auth redirects.
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.webmanifest|opengraph-image|twitter-image|icon|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|woff2?)$).*)",
+  ],
+};

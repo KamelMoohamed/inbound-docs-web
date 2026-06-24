@@ -7,7 +7,7 @@ Next.js (App Router) review console for the incoming-document SaaS platform.
 ```bash
 npm install
 cp .env.local.example .env.local
-# BACKEND_URL defaults to http://localhost:8000
+# NEXT_PUBLIC_BACKEND_URL defaults to http://localhost:8000
 npm run dev
 ```
 
@@ -100,15 +100,48 @@ Build a Docker image:
 ```bash
 docker build -t clinidoc-web .
 docker run -p 3000:3000 \
-  -e BACKEND_URL=https://your-backend \
+  -e NEXT_PUBLIC_BACKEND_URL=https://your-backend \
+  -e NEXT_PUBLIC_SITE_URL=https://clinidoc.com.au \
   clinidoc-web
 ```
 
-`BACKEND_URL` is supplied as an environment variable to the running container — never baked into the image.
+`NEXT_PUBLIC_BACKEND_URL` is supplied as an environment variable to the running container — never baked into the image.
+
+`NEXT_PUBLIC_SITE_URL` is the public origin used for all SEO output (canonical URLs, sitemap, robots, Open Graph). It defaults to `https://clinidoc.com.au`; override it for preview/staging deployments so crawlers never index a preview as canonical.
+
+## SEO
+
+All SEO is generated from one config module, `lib/seo.ts` (site URL, name, description, theme colour, base metadata, the per-page `pageMetadata()` helper, the `noindex` preset, and schema.org structured data). Change copy or keywords there, not in individual pages.
+
+| Output | Source | URL |
+|---|---|---|
+| Robots rules | `app/robots.ts` | `/robots.txt` |
+| Sitemap (public marketing routes) | `app/sitemap.ts` (`PUBLIC_ROUTES` in `lib/seo.ts`) | `/sitemap.xml` |
+| PWA manifest | `app/manifest.ts` | `/manifest.webmanifest` |
+| Social card (1200×630, branded) | `app/(marketing)/opengraph-image.tsx` + `twitter-image.tsx` | injected as `og:image` / `twitter:image` |
+| Page `<title>`, description, canonical, OG/Twitter | `app/(marketing)/layout.tsx` + per-page `pageMetadata()` | every marketing page |
+| JSON-LD (Organization, WebSite, SoftwareApplication) | `structuredData()` in `lib/seo.ts` | `<script type="application/ld+json">` |
+| Browser/PWA favicon | `app/favicon.ico` + `app/icon.png` | `/favicon.ico`, `/icon.png` |
+
+**Indexing policy:** only the public `(marketing)` pages are indexable. The auth, app (`(main)`), and admin layouts carry `robots: noindex, nofollow`, and `robots.txt` disallows every private route. `middleware.ts` exempts the SEO metadata routes and static assets from the auth redirect so crawlers can fetch them.
+
+### After deployment
+
+These steps can only be done once the site is live on the real domain — they are **not** part of the build:
+
+1. **Set `NEXT_PUBLIC_SITE_URL`** to the production origin (`https://clinidoc.com.au`) on the deployed environment, and confirm preview/staging deployments use their own origin. Verify the live values:
+   - `https://clinidoc.com.au/robots.txt` — `Allow: /`, private routes disallowed, `Sitemap:` points to the production domain
+   - `https://clinidoc.com.au/sitemap.xml` — every `<loc>` is `https://clinidoc.com.au/...`
+2. **Google Search Console** — add and verify the `clinidoc.com.au` property (DNS TXT record is the most robust), then submit `https://clinidoc.com.au/sitemap.xml`.
+3. **Bing Webmaster Tools** — add the site (you can import the verification + sitemap from Search Console).
+4. **Validate structured data** — run the home page through the [Rich Results Test](https://search.google.com/test/rich-results) and confirm the Organization / WebSite / SoftwareApplication entities parse with no errors.
+5. **Validate the social card** — check a page URL in [opengraph.xyz](https://www.opengraph.xyz/) (or LinkedIn Post Inspector / X Card Validator) and confirm the branded 1200×630 card renders. Social platforms cache cards aggressively — re-scrape after any change.
+6. **Analytics & consent** — if/when adding an analytics tag (e.g. Plausible/GA4), wire it behind the privacy/consent posture described in `/privacy`. (Not currently included.)
+7. **DNS canonicalisation** — make sure only one host serves content: redirect `www` → apex (or vice-versa) at the edge/CDN so it matches `NEXT_PUBLIC_SITE_URL` and avoids duplicate-content splits.
 
 ## PMS integration
 
-Three surfaces built on the `/pms` backend endpoints (requires `BACKEND_URL`):
+Three surfaces built on the `/pms` backend endpoints (requires `NEXT_PUBLIC_BACKEND_URL`):
 
 | Surface | Route | Auth |
 |---|---|---|

@@ -1,10 +1,12 @@
 import { Section } from "@/components/marketing/Section";
 import { ContactForm } from "./ContactForm";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Contact — CliniDoc",
+export const metadata = pageMetadata({
+  title: "Contact",
   description: "Book a demo and see how CliniDoc fits your practice workflow.",
-};
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

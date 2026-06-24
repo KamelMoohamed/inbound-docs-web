@@ -1,6 +1,7 @@
 import { Section } from "@/components/marketing/Section";
 import { FeatureCard } from "@/components/marketing/FeatureCard";
 import Link from "next/link";
+import { pageMetadata } from "@/lib/seo";
 
 const controls = [
   ["Onshore data residency", "All health data — database, document storage and backups — is hosted in Australia (Sydney)."],
@@ -11,10 +12,11 @@ const controls = [
   ["Data minimisation", "Raw documents are purged after filing and identifiers de-identified when no longer needed."],
 ];
 
-export const metadata = {
-  title: "Security & Compliance — CliniDoc",
+export const metadata = pageMetadata({
+  title: "Security & Compliance",
   description: "Onshore hosting, encryption, MFA, audit logging and privacy controls for Australian health information.",
-};
+  path: "/security",
+});
 
 export default function SecurityPage() {
   return (

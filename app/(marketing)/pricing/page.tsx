@@ -1,5 +1,6 @@
 import { Section } from "@/components/marketing/Section";
 import { CTA } from "@/components/marketing/CTA";
+import { pageMetadata } from "@/lib/seo";
 
 type Tier = {
   name: string;
@@ -51,10 +52,11 @@ const faqs: [string, string][] = [
   ["Can I change plans?", "Anytime — upgrade or downgrade from the billing page and the change takes effect on your next cycle."],
 ];
 
-export const metadata = {
-  title: "Pricing — CliniDoc",
+export const metadata = pageMetadata({
+  title: "Pricing",
   description: "Simple, usage-based pricing for clinical document triage. Start free with trial credits, then pay per document processed.",
-};
+  path: "/pricing",
+});
 
 export default function PricingPage() {
   return (

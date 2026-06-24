@@ -2,13 +2,15 @@ import { publicApi } from "@/lib/api";
 import { PmsCard } from "@/components/PmsCard";
 import { Section } from "@/components/marketing/Section";
 import Link from "next/link";
+import { pageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "Integrations — CliniDoc",
+export const metadata = pageMetadata({
+  title: "Integrations",
   description: "We work with every clinic. Connected practice software gets documents filed automatically; everyone else can start today in export mode.",
-};
+  path: "/integrations",
+});
 
 export default async function IntegrationsPage() {
   const catalog = await publicApi.pmsCatalog();

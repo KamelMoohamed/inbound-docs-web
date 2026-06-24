@@ -5,6 +5,7 @@ import { MfaChallenge } from "./MfaChallenge";
 import { SsoButton } from "@/components/SsoButton";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
+import { Brand } from "@/components/Brand";
 
 export default function LoginPage() {
   const [state, action, pending] = useActionState(loginAction, null);
@@ -27,7 +28,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-slate-50">
       <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-        <p className="text-xl font-semibold text-indigo-600">CliniDoc</p>
+        <Brand href={null} iconSize={30} textClass="text-xl" />
         <h1 className="mt-2 text-lg font-semibold text-slate-900">Sign in</h1>
         <p className="mt-1 text-sm text-slate-500">Welcome back</p>
 
