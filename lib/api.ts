@@ -5,8 +5,14 @@ import { ReviewItem, ReviewDetail, Patient, Metrics, OrgUser, FailedDoc,
          NotificationFeed, Provider, EscalationPolicy, ReportSummary, OrgAuditEntry,
          MeProfile, OnboardingStatus, SsoConfig, AdminTenant, WebhookEndpoint } from "./types";
 import { getSession } from "./auth";
+import { messageFromApiBody } from "./apiError";
 
 const BASE = process.env.NEXT_PUBLIC_BACKEND_URL!;
+
+async function failResponse(r: Response, method: string, path: string): Promise<never> {
+  const body = await r.text();
+  throw new Error(messageFromApiBody(r.status, body, method, path));
+}
 
 async function authHeaders() {
   const session = await getSession();
@@ -16,7 +22,7 @@ async function authHeaders() {
 
 async function get(path: string) {
   const r = await fetch(`${BASE}${path}`, { headers: await authHeaders(), cache: "no-store" });
-  if (!r.ok) throw new Error(`GET ${path} → ${r.status}`);
+  if (!r.ok) await failResponse(r, "GET", path);
   return r.json();
 }
 
@@ -27,7 +33,7 @@ async function post(path: string, body?: unknown, isFormData = false) {
     method: "POST", headers,
     body: isFormData ? (body as FormData) : JSON.stringify(body ?? {}),
   });
-  if (!r.ok) throw new Error(`POST ${path} → ${r.status}`);
+  if (!r.ok) await failResponse(r, "POST", path);
   return r.json();
 }
 

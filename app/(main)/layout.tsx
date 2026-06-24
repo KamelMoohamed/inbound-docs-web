@@ -1,8 +1,7 @@
 import "../globals.css";
+import { Suspense } from "react";
 import { Nav } from "@/components/Nav";
-import { LowCreditBanner } from "@/components/LowCreditBanner";
-import { VerifyBanner } from "@/components/VerifyBanner";
-import { BillingBanner } from "@/components/BillingBanner";
+import { AppBanners } from "@/components/AppBanners";
 import { ImpersonatingBanner } from "@/components/ImpersonatingBanner";
 import { noindexMetadata, baseViewport } from "@/lib/seo";
 
@@ -15,9 +14,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen bg-slate-50 text-slate-900" suppressHydrationWarning>
         <Nav />
         <ImpersonatingBanner />
-        <VerifyBanner />
-        <BillingBanner />
-        <LowCreditBanner />
+        <Suspense fallback={null}>
+          <AppBanners />
+        </Suspense>
         <main className="mx-auto max-w-5xl p-6">{children}</main>
       </body>
     </html>

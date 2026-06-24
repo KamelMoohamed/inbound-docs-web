@@ -7,7 +7,7 @@
  * Next's control-flow "errors" for `redirect()` / `notFound()` are re-thrown so
  * the happy-path navigation still works on success.
  */
-export function withNetworkGuard<S extends { error: string } | null>(
+export function withNetworkGuard<S extends { error?: string } | null>(
   action: (prev: S, formData: FormData) => Promise<S>,
 ): (prev: S, formData: FormData) => Promise<S> {
   return async (prev, formData) => {
@@ -20,7 +20,7 @@ export function withNetworkGuard<S extends { error: string } | null>(
   };
 }
 
-function isNextControlFlow(e: unknown): boolean {
+export function isNextControlFlow(e: unknown): boolean {
   if (typeof e !== "object" || e === null || !("digest" in e)) return false;
   const digest = (e as { digest: unknown }).digest;
   return typeof digest === "string" && (digest.startsWith("NEXT_REDIRECT") || digest === "NEXT_NOT_FOUND");

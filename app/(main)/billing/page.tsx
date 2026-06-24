@@ -1,12 +1,11 @@
 import { api } from "@/lib/api";
 import { requireSession } from "@/lib/auth";
 import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Badge } from "@/components/Badge";
-import { PlanCard } from "@/components/PlanCard";
+import { BillingPlans } from "@/components/BillingPlans";
+import { BillingPortalButton } from "@/components/BillingPortalButton";
 import { creditTone } from "@/lib/format";
-import { checkoutAction, portalAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -36,9 +35,9 @@ export default async function BillingPage() {
                 <Badge tone="ok">{summary.plan.key} · {summary.plan.status}</Badge>
                 <div className="mt-1 text-xs text-slate-500">Renews {new Date(summary.plan.currentPeriodEnd).toLocaleDateString()}</div>
                 {canManage && (
-                  <form action={portalAction} className="mt-2">
-                    <Button type="submit" variant="secondary" size="sm">Manage subscription</Button>
-                  </form>
+                  <div className="mt-2">
+                    <BillingPortalButton />
+                  </div>
                 )}
               </>
             ) : <Badge tone="muted">No active plan</Badge>}
@@ -48,12 +47,7 @@ export default async function BillingPage() {
 
       {/* Plan tiers */}
       {canManage && (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {Object.entries(summary.plans).map(([key, p]) => (
-            <PlanCard key={key} planKey={key} monthlyCredits={p.monthlyCredits}
-              current={summary.plan?.key === key} action={checkoutAction} />
-          ))}
-        </div>
+        <BillingPlans plans={summary.plans} currentPlanKey={summary.plan?.key} />
       )}
 
       {/* Transaction history */}

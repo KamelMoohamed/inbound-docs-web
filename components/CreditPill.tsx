@@ -1,10 +1,7 @@
 import Link from "next/link";
-import { api } from "@/lib/api";
 import { creditTone } from "@/lib/format";
 
-export async function CreditPill() {
-  let balance = 0;
-  try { balance = (await api.billingSummary()).balance; } catch { return null; }
+export function CreditPill({ balance }: { balance: number }) {
   const tone = creditTone(balance);
   const cls = tone === "danger" ? "bg-red-100 text-red-800"
     : tone === "warn" ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800";
