@@ -36,6 +36,7 @@ export const ReviewDetail = z.object({
   pms_filing_id: z.string().nullable().optional(),
   pms_task_id: z.string().nullable().optional(),
   pms_acknowledged_at: z.string().nullable().optional(),
+  write_back_status: z.string().nullable().optional(),
 });
 export type ReviewDetail = z.infer<typeof ReviewDetail>;
 
@@ -212,3 +213,25 @@ export const WebhookEndpoint = z.object({
   id: z.string(), url: z.string(), events: z.array(z.string()), active: z.boolean(),
 });
 export type WebhookEndpoint = z.infer<typeof WebhookEndpoint>;
+
+export const ExportRow = z.object({
+  documentId: z.string(),
+  lastName: z.string(),
+  firstName: z.string(),
+  dob: z.string().nullable(),
+  medicareNumber: z.string().nullable(),
+  docType: z.string().nullable(),
+  documentDate: z.string().nullable(),
+  provider: z.string().nullable(),
+  urgency: z.string().nullable(),
+  summary: z.string().nullable(),
+  mediaType: z.string(),
+  fileName: z.string(),
+});
+export type ExportRow = z.infer<typeof ExportRow>;
+
+export const ExportPendingResult = z.object({
+  items: ExportRow.array(),
+  total: z.number(),
+});
+export type ExportPendingResult = z.infer<typeof ExportPendingResult>;

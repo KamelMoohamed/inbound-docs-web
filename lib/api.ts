@@ -3,7 +3,8 @@ import { ReviewItem, ReviewDetail, Patient, Metrics, OrgUser, FailedDoc,
          BillingSummary, CreditTxn, Channel, HeldDoc, AuditEvent,
          PmsConnectionStatus, StuckDoc, PmsCatalogEntry, Paginated,
          NotificationFeed, Provider, EscalationPolicy, ReportSummary, OrgAuditEntry,
-         MeProfile, OnboardingStatus, SsoConfig, AdminTenant, WebhookEndpoint } from "./types";
+         MeProfile, OnboardingStatus, SsoConfig, AdminTenant, WebhookEndpoint,
+         ExportPendingResult } from "./types";
 import { getSession } from "./auth";
 import { messageFromApiBody } from "./apiError";
 
@@ -55,6 +56,15 @@ export const api = {
                post(`/review/${id}/confirm`, body),
   retry:     (id: string) => post(`/review/${id}/retry`),
   upload:    (form: FormData) => post("/ingest/upload", form, true),
+  nextInQueue: async (id: string, filters: { mine?: boolean; doc_type?: string; urgency?: string; source?: string } = {}) => {
+    const q = new URLSearchParams();
+    if (filters.mine) q.set("assigned_to", "me");
+    if (filters.doc_type) q.set("doc_type", filters.doc_type);
+    if (filters.urgency) q.set("urgency", filters.urgency);
+    if (filters.source) q.set("source", filters.source);
+    const qs = q.toString();
+    return get(`/review/${id}/next${qs ? `?${qs}` : ""}`) as Promise<{ next_id: string | null; remaining: number }>;
+  },
   importRoster: (form: FormData) => post("/roster/import", form, true),
   rematch:   () => post("/roster/rematch"),
   invite:    (email: string, role: string) => post("/org/invitations", { email, role }),
@@ -157,6 +167,14 @@ export const api = {
   testWebhook:      (id: string) => post(`/webhooks/${id}/test`),
   updateWebhook:    async (id: string, body: { active?: boolean }) =>
                     fetch(`${BASE}/webhooks/${id}`, { method: "PATCH", headers: await authHeaders(), body: JSON.stringify(body) }).then(r => r.json()),
+  exportPending:    async () => ExportPendingResult.parse(await get("/pms/export/pending")),
+  markBatchFiled:   async (ids: string[]) => post("/pms/export/mark-filed", { ids }) as Promise<{ filed: number }>,
+  exportBundle:     async () => {
+    const h = await authHeaders();
+    const r = await fetch(`${BASE}/pms/export/bundle`, { headers: h, cache: "no-store" });
+    if (!r.ok) throw new Error(`GET /pms/export/bundle → ${r.status}`);
+    return r;
+  },
 };
 
 // Public (no auth) — used in server actions for login/signup
