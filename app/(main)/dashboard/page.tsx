@@ -5,22 +5,29 @@ import { OnboardingChecklist } from "@/components/OnboardingChecklist";
 import { dismissOnboardingAction } from "@/app/(main)/onboarding/actions";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
+import { LocalTime } from "@/components/LocalTime";
 
 export const dynamic = "force-dynamic";
 
 export default async function Dashboard() {
-  const [m, billing, onboarding] = await Promise.all([
+  const [m, billing, onboarding, exportQueue] = await Promise.all([
     api.metrics(),
     api.billingSummary(),
     api.onboarding().catch(() => null),
+    api.exportPending().catch(() => ({ items: [], total: 0 })),
   ]);
-  const today = new Date().toLocaleDateString("en-AU", {
-    weekday: "long", year: "numeric", month: "long", day: "numeric",
-  });
   const showOnboarding = onboarding && !onboarding.complete && !onboarding.dismissed;
   return (
     <section>
-      <PageHeader title="Practice dashboard" subtitle={today} />
+      <PageHeader
+        title="Practice dashboard"
+        subtitle={
+          <LocalTime
+            locale="en-AU"
+            options={{ weekday: "long", year: "numeric", month: "long", day: "numeric" }}
+          />
+        }
+      />
       {showOnboarding && (
         <div className="mb-6">
           <OnboardingChecklist status={onboarding} dismiss={dismissOnboardingAction} />
@@ -33,6 +40,17 @@ export default async function Dashboard() {
         <Stat label="Filed (all time)" value={m.filed_total} accent="emerald" />
         <Stat label="Auto-handled (all time)" value={`${m.auto_handled_pct}%`} hint="accepted unchanged" accent="emerald" />
       </div>
+      {exportQueue.total > 0 && (
+        <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+          <Stat
+            label="Pending export"
+            value={exportQueue.total}
+            accent="amber"
+            href="/export"
+            hint="ready to download and file"
+          />
+        </div>
+      )}
       {m.urgent_pending > 0 && (
         <Card className="mt-4 border-red-200 bg-red-50 text-sm text-red-800">
           <strong>Overdue urgent:</strong> {m.urgent_pending} document(s) need immediate attention.

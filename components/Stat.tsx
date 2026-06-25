@@ -1,11 +1,12 @@
 import Link from "next/link";
 
-type Accent = "indigo" | "red" | "emerald";
+type Accent = "indigo" | "red" | "emerald" | "amber";
 
 const ACCENT: Record<Accent, string> = {
   indigo: "border-t-indigo-500",
   red: "border-t-red-500",
   emerald: "border-t-emerald-500",
+  amber: "border-t-amber-500",
 };
 
 export function Stat({
