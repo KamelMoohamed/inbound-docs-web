@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Pagination } from "@/components/Pagination";
+import { LocalTime } from "@/components/LocalTime";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +33,7 @@ export default async function HeldPage({
             <tbody>
               {docs.map((d) => (
                 <tr key={d.id} className="border-b border-slate-100">
-                  <td className="px-4 py-3 text-slate-500">{new Date(d.created_at).toLocaleString()}</td>
+                  <td className="px-4 py-3 text-slate-500"><LocalTime value={d.created_at} /></td>
                   <td className="px-4 py-3 text-slate-700">{d.source}</td>
                   <td className="px-4 py-3 text-right text-slate-700">{d.credit_cost ?? "—"}</td>
                 </tr>

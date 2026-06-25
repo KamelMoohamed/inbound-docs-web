@@ -3,6 +3,7 @@ import { api } from "@/lib/api";
 import { requireSession } from "@/lib/auth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
+import { LocalTime } from "@/components/LocalTime";
 
 export const dynamic = "force-dynamic";
 
@@ -70,7 +71,7 @@ export default async function OrgAuditPage({
               <tr key={e.id} className="border-b border-slate-100">
                 <td className="px-4 py-3 text-slate-700">{e.event_type}</td>
                 <td className="px-4 py-3 text-slate-500">{e.actor}</td>
-                <td className="px-4 py-3 text-slate-400">{new Date(e.created_at).toLocaleString()}</td>
+                <td className="px-4 py-3 text-slate-400"><LocalTime value={e.created_at} /></td>
               </tr>
             ))}
           </tbody>

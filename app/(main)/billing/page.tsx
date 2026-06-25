@@ -6,6 +6,7 @@ import { Badge } from "@/components/Badge";
 import { BillingPlans } from "@/components/BillingPlans";
 import { BillingPortalButton } from "@/components/BillingPortalButton";
 import { Pagination } from "@/components/Pagination";
+import { LocalTime } from "@/components/LocalTime";
 import { creditTone } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -41,7 +42,7 @@ export default async function BillingPage({
             {summary.plan ? (
               <>
                 <Badge tone="ok">{summary.plan.key} · {summary.plan.status}</Badge>
-                <div className="mt-1 text-xs text-slate-500">Renews {new Date(summary.plan.currentPeriodEnd).toLocaleDateString()}</div>
+                <div className="mt-1 text-xs text-slate-500">Renews <LocalTime value={summary.plan.currentPeriodEnd} withTime={false} /></div>
                 {canManage && (
                   <div className="mt-2">
                     <BillingPortalButton />
@@ -74,7 +75,7 @@ export default async function BillingPage({
             <tbody>
               {txns.map((t) => (
                 <tr key={t.id} className="border-b border-slate-100">
-                  <td className="py-2 text-slate-500">{new Date(t.createdAt).toLocaleString()}</td>
+                  <td className="py-2 text-slate-500"><LocalTime value={t.createdAt} /></td>
                   <td className="py-2 text-slate-700">{t.reason}</td>
                   <td className={`py-2 text-right font-medium ${t.amount < 0 ? "text-red-600" : "text-emerald-600"}`}>
                     {t.amount > 0 ? "+" : ""}{t.amount}

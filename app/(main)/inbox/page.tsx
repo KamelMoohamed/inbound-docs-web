@@ -36,6 +36,15 @@ export default async function Home({
 
   const hasFilters = !!(params.doc_type || params.urgency || params.source);
 
+  // Queue-defining context (no page) carried into each report so "Next in queue"
+  // walks this same filtered list.
+  const ctx = new URLSearchParams();
+  if (mine) ctx.set("mine", "1");
+  if (params.doc_type) ctx.set("doc_type", params.doc_type);
+  if (params.urgency) ctx.set("urgency", params.urgency);
+  if (params.source) ctx.set("source", params.source);
+  const queryContext = ctx.toString();
+
   return (
     <section>
       <PageHeader
@@ -76,11 +85,11 @@ export default async function Home({
         </form>
       )}
 
-      <ReviewTable items={items} />
+      <ReviewTable items={items} queryContext={queryContext} />
       <Pagination
         page={page}
         total={total}
-        buildHref={(p) => buildFilterHref({ page: String(p) } as any)}
+        buildHref={(p) => buildFilterHref({ page: String(p) })}
       />
     </section>
   );

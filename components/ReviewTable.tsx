@@ -19,7 +19,7 @@ function timeAgo(iso: string): string {
   return `${Math.floor(h / 24)}d ago`;
 }
 
-export function ReviewTable({ items }: { items: ReviewItem[] }) {
+export function ReviewTable({ items, queryContext = "" }: { items: ReviewItem[]; queryContext?: string }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [pending, startTransition] = useTransition();
   const [result, setResult] = useState<{ succeeded: number; failed: number } | null>(null);
@@ -118,7 +118,7 @@ export function ReviewTable({ items }: { items: ReviewItem[] }) {
                   {i.created_at ? timeAgo(i.created_at) : "—"}
                 </td>
                 <td className="px-4 py-3">
-                  <Link href={`/review/${i.id}`}
+                  <Link href={`/review/${i.id}${queryContext ? `?${queryContext}` : ""}`}
                     className="inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50">
                     Open
                   </Link>

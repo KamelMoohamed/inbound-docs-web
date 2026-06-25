@@ -5,6 +5,7 @@ import { LoopClosure } from "@/components/LoopClosure";
 import { FormButton } from "@/components/FormButton";
 import { Badge } from "@/components/Badge";
 import { TruncationBanner } from "@/components/TruncationBanner";
+import { LocalTime } from "@/components/LocalTime";
 import { connectApiKey, beginOAuth, disconnect, syncRoster } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -18,8 +19,10 @@ export default async function IntegrationsSettingsPage() {
   ]);
   const canManage = session.role === "owner" || session.role === "admin";
 
+  // Only Jane uses the OAuth authorize-redirect flow. Halaxy and Practice Better use
+  // OAuth client-credentials, which we collect as an api_key-style "clientId:clientSecret".
   const authKindFor = (key: string): "api_key" | "oauth2" =>
-    (key === "halaxy" || key === "jane") ? "oauth2" : "api_key";
+    key === "jane" ? "oauth2" : "api_key";
   const options = catalog.filter((c) => c.tier !== "export_only")
     .map((c) => ({ key: c.key, display_name: c.display_name, authKind: authKindFor(c.key) }));
 
@@ -31,7 +34,7 @@ export default async function IntegrationsSettingsPage() {
         <section className="rounded-lg border border-gray-200 p-4 flex flex-col gap-2">
           <p><span className="font-medium">{status.pmsType}</span> — {status.status}</p>
           <p className="text-sm text-gray-500">
-            Last roster sync: {status.lastRosterSyncAt ? new Date(status.lastRosterSyncAt).toLocaleString() : "never"}
+            Last roster sync: {status.lastRosterSyncAt ? <LocalTime value={status.lastRosterSyncAt} /> : "never"}
           </p>
           {status.lastError && <p className="text-sm text-red-600">{status.lastError}</p>}
           {canManage && (
@@ -98,7 +101,7 @@ export default async function IntegrationsSettingsPage() {
                           {d.doc_type ? d.doc_type.replace(/_/g, " ") : "Unknown"}
                         </a>
                         <p className="mt-0.5 text-xs text-slate-400">
-                          {new Date(d.updated_at).toLocaleString()}
+                          <LocalTime value={d.updated_at} />
                         </p>
                       </td>
                       <td className="px-4 py-3">

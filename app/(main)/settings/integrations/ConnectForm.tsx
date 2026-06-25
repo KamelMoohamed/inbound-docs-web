@@ -12,6 +12,14 @@ export function ConnectForm({ options, connectApiKey, beginOAuth, selected: init
   const [selected, setSelected] = useState(initial ?? options[0]?.key ?? "");
   const opt = options.find((o) => o.key === selected);
 
+  // Halaxy, Practice Better and MediRecords authenticate with OAuth client-credentials,
+  // entered as "clientId:clientSecret"; the others take a single API key.
+  const usesClientPair = selected === "halaxy" || selected === "practicebetter" || selected === "medirecords";
+  const keyLabel = usesClientPair ? "Client ID : Client secret" : "API key";
+  const keyHint = usesClientPair
+    ? 'Enter as "clientId:clientSecret" from your PMS account'
+    : undefined;
+
   return (
     <div className="flex flex-col gap-3 max-w-md">
       <label className="flex flex-col gap-1 text-sm">Practice software
@@ -23,8 +31,9 @@ export function ConnectForm({ options, connectApiKey, beginOAuth, selected: init
       {opt?.authKind === "api_key" && (
         <form action={connectApiKey} className="flex flex-col gap-2">
           <input type="hidden" name="pms_type" value={selected} />
-          <label className="flex flex-col gap-1 text-sm">API key
-            <input name="api_key" aria-label="API key" className="border rounded px-2 py-1" />
+          <label className="flex flex-col gap-1 text-sm">{keyLabel}
+            <input name="api_key" aria-label={keyLabel} placeholder={keyHint} className="border rounded px-2 py-1" />
+            {keyHint && <span className="text-xs text-gray-500">{keyHint}</span>}
           </label>
           <button type="submit" className="bg-blue-600 text-white rounded px-4 py-2">Connect</button>
         </form>

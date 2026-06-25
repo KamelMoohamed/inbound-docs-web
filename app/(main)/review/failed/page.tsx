@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { LocalTime } from "@/components/LocalTime";
 import { Pagination } from "@/components/Pagination";
 
 export const dynamic = "force-dynamic";
@@ -37,7 +38,7 @@ export default async function FailedPage({
                 <tr key={d.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                   <td className="px-4 py-3 text-slate-700">{d.doc_type ?? "—"}</td>
                   <td className="px-4 py-3 font-mono text-xs text-red-600">{d.error ?? "—"}</td>
-                  <td className="px-4 py-3 text-slate-400">{new Date(d.created_at).toLocaleDateString()}</td>
+                  <td className="px-4 py-3 text-slate-400"><LocalTime value={d.created_at} withTime={false} /></td>
                   <td className="px-4 py-3">
                     <form action={retryAction.bind(null, d.id)}>
                       <Button type="submit" variant="secondary" size="sm">Retry</Button>
