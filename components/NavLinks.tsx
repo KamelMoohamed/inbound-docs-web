@@ -16,10 +16,11 @@ export function NavLinks() {
   return (
     <div className="flex items-center gap-1">
       {/* Review groups the inbox + its secondary queues. */}
-      <NavMenu label="Review" activePrefixes={["/inbox", "/review"]}>
+      <NavMenu label="Review" activePrefixes={["/inbox", "/review", "/export"]}>
         <NavMenuItem href="/inbox" label="Inbox" />
         <NavMenuItem href="/review/failed" label="Failed" />
         <NavMenuItem href="/review/held" label="Held" />
+        <NavMenuItem href="/export" label="Export queue" />
       </NavMenu>
 
       {primary.map(([href, label]) => {
