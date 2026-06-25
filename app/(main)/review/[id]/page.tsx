@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { api } from "@/lib/api";
 import { Badge } from "@/components/Badge";
 import { PatientPicker } from "@/components/PatientPicker";
@@ -8,52 +9,72 @@ import { LoopClosure } from "@/components/LoopClosure";
 import { AiUseNotice } from "@/components/AiUseNotice";
 import { DeleteDocumentButton } from "@/components/DeleteDocumentButton";
 import { AddPatientInline } from "@/components/AddPatientInline";
+import { LocalTime } from "@/components/LocalTime";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import {
   confirmAction, changeTypeAction, assignAction,
-  discardAction, markDuplicateAction, splitAction,
+  discardAction, markDuplicateAction, splitAction, markDocFiledAction,
 } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function ReviewDetail({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ mine?: string; doc_type?: string; urgency?: string; source?: string }>;
 }) {
   const { id } = await params;
-  const [doc, audit, providers, pmsStatus] = await Promise.all([
+  const sp = await searchParams;
+  const queueFilters = { mine: !!sp.mine, doc_type: sp.doc_type, urgency: sp.urgency, source: sp.source };
+  const [doc, audit, providers, pmsStatus, next] = await Promise.all([
     api.getReview(id),
     api.getAudit(id),
     api.listProviders(),
     api.pmsConnection().catch(() => ({ connected: false as const })),
+    api.nextInQueue(id, queueFilters).catch(() => ({ next_id: null, remaining: 0 })),
   ]);
   const hasPms = pmsStatus.connected;
   const confirm = confirmAction.bind(null, doc.id);
 
+  // Preserve the queue context (filters) when moving between reports and back.
+  const ctx = new URLSearchParams();
+  if (queueFilters.mine) ctx.set("mine", "1");
+  if (queueFilters.doc_type) ctx.set("doc_type", queueFilters.doc_type);
+  if (queueFilters.urgency) ctx.set("urgency", queueFilters.urgency);
+  if (queueFilters.source) ctx.set("source", queueFilters.source);
+  const ctxQs = ctx.toString();
+  const queueHref = `/inbox${ctxQs ? `?${ctxQs}` : ""}`;
+  const nextHref = next.next_id ? `/review/${next.next_id}${ctxQs ? `?${ctxQs}` : ""}` : null;
+
   const extracted = doc.extracted as Record<string, string> | null;
-  const filed = doc.status === "filed" || !!doc.pms_filing_id;
+  const queuedForExport = doc.write_back_status === "export_pending";
+  const filed = (doc.status === "filed" || !!doc.pms_filing_id) && !queuedForExport;
 
   return (
     <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <div>
-        <a href="/inbox" className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline">
+        <a href={queueHref} className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline">
           ← Back to queue
         </a>
         <Card className="mt-3 overflow-hidden" padding="p-0">
           <img src={`/api/raw/${doc.id}`} alt="original document" className="w-full" />
         </Card>
-        <Card padding="p-4" className="mt-3">
-          <p className="mb-2 text-sm font-semibold text-slate-700">Split fax</p>
-          <SplitDialog split={splitAction.bind(null, doc.id)} />
-        </Card>
+        {!filed && (
+          <Card padding="p-4" className="mt-3">
+            <p className="mb-2 text-sm font-semibold text-slate-700">Split fax</p>
+            <SplitDialog split={splitAction.bind(null, doc.id)} />
+          </Card>
+        )}
       </div>
 
       <Card padding="p-6" className="space-y-5">
         <div className="flex items-center gap-2">
           <h1 className="text-xl font-semibold text-slate-900">{doc.doc_type ?? "Unknown"}</h1>
           {doc.urgency === "urgent" && <Badge tone="danger">Urgent</Badge>}
+          {filed && <Badge tone="ok">Filed</Badge>}
         </div>
 
         {filed && (
@@ -62,6 +83,24 @@ export default async function ReviewDetail({
             pms_task_id={doc.pms_task_id}
             pms_acknowledged_at={doc.pms_acknowledged_at}
           />
+        )}
+
+        {queuedForExport && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 space-y-2">
+            <p className="text-sm text-amber-800">
+              <span className="font-semibold">Queued for export.</span>{" "}
+              This document is confirmed and waiting to be filed manually in your PMS.{" "}
+              <a href="/export" className="underline hover:text-amber-900">Open Export queue →</a>
+            </p>
+            <form action={markDocFiledAction.bind(null, doc.id)}>
+              <button
+                type="submit"
+                className="rounded-lg border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-800 hover:bg-amber-50"
+              >
+                Mark as filed in PMS
+              </button>
+            </form>
+          </div>
         )}
 
         <AiUseNotice />
@@ -89,54 +128,79 @@ export default async function ReviewDetail({
           )}
         </div>
 
-        <form action={changeTypeAction.bind(null, doc.id)} className="flex items-end gap-2">
-          <label className="text-sm">Document type
-            <select name="doc_type" defaultValue={doc.doc_type ?? "other"}
-              className="mt-1 block rounded-lg border border-slate-300 px-3 py-2 text-sm">
-              {["pathology", "radiology", "specialist_letter", "discharge_summary", "referral", "other"].map((t) => (
-                <option key={t} value={t}>{t.replace(/_/g, " ")}</option>
-              ))}
-            </select>
-          </label>
-          <Button type="submit" variant="secondary">Save type</Button>
-        </form>
+        {!filed && (
+          <form action={changeTypeAction.bind(null, doc.id)} className="flex items-end gap-2">
+            <label className="text-sm">Document type
+              <select name="doc_type" defaultValue={doc.doc_type ?? "other"}
+                className="mt-1 block rounded-lg border border-slate-300 px-3 py-2 text-sm">
+                {["pathology", "radiology", "specialist_letter", "discharge_summary", "referral", "other"].map((t) => (
+                  <option key={t} value={t}>{t.replace(/_/g, " ")}</option>
+                ))}
+              </select>
+            </label>
+            <Button type="submit" variant="secondary">Save type</Button>
+          </form>
+        )}
 
-        <Card padding="p-4" className="space-y-3">
-          <p className="text-sm font-semibold text-slate-700">Assign to provider</p>
-          <AssignControl providers={providers} assign={assignAction.bind(null, doc.id)} />
-        </Card>
+        {!filed && (
+          <Card padding="p-4" className="space-y-3">
+            <p className="text-sm font-semibold text-slate-700">Assign to provider</p>
+            <AssignControl providers={providers} assign={assignAction.bind(null, doc.id)} />
+          </Card>
+        )}
 
-        <form action={async () => { "use server"; await confirm(doc.matched_patient_id, doc.doc_type, true); }}>
-          <Button type="submit" variant="primary" disabled={!doc.matched_patient_id || !hasPms} className="w-full">
-            Confirm &amp; file
-          </Button>
-        </form>
-        {!hasPms && (
+        {filed ? (
+          <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+            ✓ This document has been confirmed and filed.
+          </p>
+        ) : !queuedForExport ? (
+          <form action={async () => { "use server"; await confirm(doc.matched_patient_id, doc.doc_type, true); }}>
+            <Button type="submit" variant="primary" disabled={!doc.matched_patient_id} className="w-full">
+              {hasPms ? "Confirm & file" : "Confirm & queue for export"}
+            </Button>
+          </form>
+        ) : null}
+        {nextHref ? (
+          <Link
+            href={nextHref}
+            className="flex items-center justify-between rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          >
+            <span>Next in queue →</span>
+            <span className="text-xs font-normal text-slate-400">{next.remaining} remaining</span>
+          </Link>
+        ) : (
+          <p className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-500">
+            Nothing else in the queue — you&apos;re all caught up.
+          </p>
+        )}
+
+        {!filed && !queuedForExport && !hasPms && (
           <p className="text-xs text-slate-500 -mt-2">
-            Connect a PMS in{" "}
-            <a href="/settings/integrations" className="underline">
-              Settings → Integrations
-            </a>{" "}
-            to file documents.
+            No PMS connected — confirming will queue this document for{" "}
+            <a href="/export" className="underline">manual export</a>.
           </p>
         )}
         {!hasPms && (
           <DeleteDocumentButton discard={discardAction.bind(null, doc.id)} />
         )}
 
-        <Card padding="p-4" className="space-y-3">
-          <p className="text-sm font-semibold text-slate-700">Reassign patient</p>
-          <PatientPicker docId={doc.id} docType={doc.doc_type} />
-          {!doc.matched_patient_id && <AddPatientInline docId={doc.id} />}
-        </Card>
+        {!filed && (
+          <Card padding="p-4" className="space-y-3">
+            <p className="text-sm font-semibold text-slate-700">Reassign patient</p>
+            <PatientPicker docId={doc.id} docType={doc.doc_type} />
+            {!doc.matched_patient_id && <AddPatientInline docId={doc.id} />}
+          </Card>
+        )}
 
-        <Card padding="p-4" className="space-y-3">
-          <p className="text-sm font-semibold text-slate-700">Disposition</p>
-          <DispositionMenu
-            discard={discardAction.bind(null, doc.id)}
-            markDuplicate={markDuplicateAction.bind(null, doc.id)}
-          />
-        </Card>
+        {!filed && (
+          <Card padding="p-4" className="space-y-3">
+            <p className="text-sm font-semibold text-slate-700">Disposition</p>
+            <DispositionMenu
+              discard={discardAction.bind(null, doc.id)}
+              markDuplicate={markDuplicateAction.bind(null, doc.id)}
+            />
+          </Card>
+        )}
 
         <Card padding="p-4">
           <p className="mb-2 text-sm font-semibold text-slate-700">Audit trail</p>
@@ -145,7 +209,7 @@ export default async function ReviewDetail({
             {audit.map((e) => (
               <li key={e.id} className="flex justify-between gap-2">
                 <span><span className="font-medium text-slate-800">{e.event_type}</span> · {e.actor}</span>
-                <span className="text-slate-400">{new Date(e.created_at).toLocaleString()}</span>
+                <span className="text-slate-400"><LocalTime value={e.created_at} /></span>
               </li>
             ))}
           </ol>

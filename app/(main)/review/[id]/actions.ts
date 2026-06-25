@@ -3,16 +3,25 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { api } from "@/lib/api";
 
+export async function markDocFiledAction(id: string) {
+  await api.markBatchFiled([id]);
+  revalidatePath("/review/[id]", "page");
+  revalidatePath("/export");
+  revalidatePath("/dashboard");
+}
+
 export async function confirmAction(id: string, patientId: string | null, docType: string | null, acceptedUnchanged: boolean) {
   await api.confirm(id, { patient_id: patientId, doc_type: docType, accepted_unchanged: acceptedUnchanged });
+  // Stay on the report and re-render it in its filed state. Also refresh the
+  // queue ("/") so the item drops off the inbox the next time it's viewed.
   revalidatePath("/");
-  redirect("/inbox");
+  revalidatePath(`/review/${id}`);
 }
 
 export async function confirmWithPatient(id: string, patientId: string, docType: string | null) {
   await api.confirm(id, { patient_id: patientId, doc_type: docType, accepted_unchanged: false });
   revalidatePath("/");
-  redirect("/inbox");
+  revalidatePath(`/review/${id}`);
 }
 
 export async function addPatientAndMatch(
