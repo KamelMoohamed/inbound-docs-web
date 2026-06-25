@@ -20,7 +20,6 @@ export default function SettingsPage() {
       <nav className="flex flex-wrap gap-3 text-sm">
         <Link href="/settings/sso" className="text-indigo-600 hover:underline">SSO</Link>
         <Link href="/settings/webhooks" className="text-indigo-600 hover:underline">Webhooks</Link>
-        <Link href="/settings/danger" className="text-red-600 hover:underline">Danger zone</Link>
       </nav>
       <Card padding="p-6">
         <h2 className="mb-4 text-base font-semibold text-slate-900">Export data</h2>
@@ -55,6 +54,18 @@ export default function SettingsPage() {
           {state.ok && <p className="text-sm text-emerald-600">Password updated. Other sessions were signed out.</p>}
           <Button type="submit" variant="primary" disabled={pending || !isPasswordValid(newPassword)}>{pending ? "Saving…" : "Update password"}</Button>
         </form>
+      </Card>
+      <Card padding="p-6" className="border-red-200">
+        <h2 className="mb-1 text-base font-semibold text-red-900">Delete organisation</h2>
+        <p className="mb-4 text-sm text-red-700">
+          Permanently deletes your organisation, cancels billing, and removes all data. This cannot be undone.
+        </p>
+        <Link
+          href="/settings/danger"
+          className="inline-flex items-center rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
+        >
+          Delete organisation →
+        </Link>
       </Card>
     </section>
   );

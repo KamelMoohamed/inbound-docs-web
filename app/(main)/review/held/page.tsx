@@ -3,15 +3,22 @@ import { api } from "@/lib/api";
 import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Pagination } from "@/components/Pagination";
 
 export const dynamic = "force-dynamic";
 
-export default async function HeldPage() {
-  const docs = await api.listHeld();
+export default async function HeldPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const params = await searchParams;
+  const page = Number(params.page ?? 1);
+  const { items: docs, total } = await api.listHeld(page);
   return (
     <section className="space-y-4">
       <PageHeader title="Held for credits" />
-      {docs.length === 0 ? (
+      {total === 0 ? (
         <EmptyState message="Nothing held — every document is being processed." />
       ) : (
         <Card padding="p-0">
@@ -34,6 +41,7 @@ export default async function HeldPage() {
           </table>
         </Card>
       )}
+      <Pagination page={page} total={total} buildHref={(p) => `?page=${p}`} />
       <p className="text-sm text-slate-500">
         These documents are safely stored and will process automatically when you{" "}
         <Link href="/billing" className="font-medium text-indigo-600 underline">add credits</Link>.

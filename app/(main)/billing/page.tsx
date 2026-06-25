@@ -5,13 +5,21 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Badge } from "@/components/Badge";
 import { BillingPlans } from "@/components/BillingPlans";
 import { BillingPortalButton } from "@/components/BillingPortalButton";
+import { Pagination } from "@/components/Pagination";
 import { creditTone } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
-export default async function BillingPage() {
+export default async function BillingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const params = await searchParams;
+  const txnPage = Number(params.page ?? 1);
   const session = await requireSession();
-  const [summary, txns] = await Promise.all([api.billingSummary(), api.creditTxns()]);
+  const [summary, txnResult] = await Promise.all([api.billingSummary(), api.creditTxns(txnPage)]);
+  const { items: txns, total: txnTotal } = txnResult;
   const canManage = ["owner", "admin"].includes(session.role);
   const tone = creditTone(summary.balance);
 
@@ -52,7 +60,7 @@ export default async function BillingPage() {
 
       {/* Transaction history */}
       <Card padding="p-6">
-        <h2 className="mb-4 text-base font-semibold text-slate-900">Recent credit activity</h2>
+        <h2 className="mb-4 text-base font-semibold text-slate-900">Credit activity</h2>
         {txns.length === 0 ? (
           <p className="text-sm text-slate-500">No activity yet.</p>
         ) : (
@@ -77,6 +85,7 @@ export default async function BillingPage() {
             </tbody>
           </table>
         )}
+        <Pagination page={txnPage} total={txnTotal} buildHref={(p) => `?page=${p}`} />
       </Card>
     </section>
   );

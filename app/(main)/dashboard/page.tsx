@@ -28,19 +28,25 @@ export default async function Dashboard() {
       )}
       <OverdueBanner metrics={m} />
       <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
-        <Stat label="In review" value={m.needs_review} accent="indigo" />
-        <Stat label="Urgent pending" value={m.urgent_pending} hint="surface these first" accent="red" />
-        <Stat label="Filed" value={m.filed_total} accent="emerald" />
-        <Stat label="Auto-handled" value={`${m.auto_handled_pct}%`} hint="accepted unchanged" accent="emerald" />
+        <Stat label="In review" value={m.needs_review} accent="indigo" href="/inbox" hint="click to open queue" />
+        <Stat label="Urgent pending" value={m.urgent_pending} hint="surface these first" accent="red" href="/inbox?urgency=urgent" />
+        <Stat label="Filed (all time)" value={m.filed_total} accent="emerald" />
+        <Stat label="Auto-handled (all time)" value={`${m.auto_handled_pct}%`} hint="accepted unchanged" accent="emerald" />
       </div>
       {m.urgent_pending > 0 && (
         <Card className="mt-4 border-red-200 bg-red-50 text-sm text-red-800">
           <strong>Overdue urgent:</strong> {m.urgent_pending} document(s) need immediate attention.
         </Card>
       )}
-      <Card className="mt-6 border-indigo-200 bg-indigo-50 text-sm text-indigo-800">
-        Auto-handled % is your ROI headline — the share of documents the AI got right with zero correction.
-      </Card>
+      {m.filed_total > 0 && (
+        <Card className="mt-6 border-indigo-200 bg-indigo-50 text-sm text-indigo-800">
+          <span className="font-semibold">{m.auto_handled_pct}%</span> of your{" "}
+          {m.filed_total.toLocaleString()} filed document{m.filed_total === 1 ? "" : "s"} were
+          accepted without any correction — that&apos;s your AI automation rate.
+          {m.auto_handled_pct >= 80 && " Strong result."}
+          {m.auto_handled_pct > 0 && m.auto_handled_pct < 50 && " As your patient roster grows, match accuracy improves."}
+        </Card>
+      )}
       <h2 className="mt-8 mb-4 text-lg font-semibold">Credits</h2>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <Stat label="Balance" value={billing.balance.toLocaleString()} hint={billing.plan ? `${billing.plan.key} plan` : "no plan"} />

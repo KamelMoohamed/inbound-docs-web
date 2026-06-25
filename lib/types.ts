@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+export const Paginated = <T extends z.ZodTypeAny>(item: T) =>
+  z.object({ items: item.array(), total: z.number() });
+
 export const MatchedPatient = z.object({
   id: z.string(), first_name: z.string(), last_name: z.string(), dob: z.string().nullable(),
 });
@@ -21,6 +24,7 @@ export const ReviewItem = z.object({
   review_band: z.string().nullable(), matched_patient_id: z.string().nullable(),
   match_confidence: z.number().nullable(), summary: z.string().nullable(),
   matched_patient: MatchedPatient.nullable(),
+  source: z.string().optional(), created_at: z.string().optional(),
 });
 export type ReviewItem = z.infer<typeof ReviewItem>;
 
@@ -83,6 +87,7 @@ export const Channel = z.object({
   id: z.string(), type: z.string(), address: z.string(),
   label: z.string().nullable(), active: z.boolean(),
   createdAt: z.string(), hasWebhookSecret: z.boolean(),
+  last_received_at: z.string().nullable().optional(),
 });
 export type Channel = z.infer<typeof Channel>;
 
@@ -153,15 +158,13 @@ export const EscalationPolicy = z.object({
 export type EscalationPolicy = z.infer<typeof EscalationPolicy>;
 
 export const ReportSummary = z.object({
+  total_filed: z.number().optional(),
   mis_file_rate: z.number(),
   median_turnaround_seconds: z.number(),
   auto_file_pct: z.number(),
   urgent_sla_adherence_pct: z.number(),
-  per_provider: z.array(z.object({
-    provider_id: z.string(),
-    name: z.string(),
-    filed: z.number(),
-  })),
+  per_provider: z.array(z.object({ provider_id: z.string(), name: z.string(), filed: z.number() })),
+  by_doc_type: z.array(z.object({ doc_type: z.string(), count: z.number() })).optional(),
 });
 export type ReportSummary = z.infer<typeof ReportSummary>;
 

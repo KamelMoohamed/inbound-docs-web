@@ -17,13 +17,15 @@ export default async function OrgAuditPage({
   }
   const params = await searchParams;
   const page = Number(params.page ?? 1);
-  const { items } = await api.orgAudit({
+  const { items, total } = await api.orgAudit({
     from: params.from,
     to: params.to,
     type: params.type,
     actor: params.actor,
     page,
   });
+  const PAGE_SIZE = 50;
+  const hasNext = page * PAGE_SIZE < total;
 
   const qs = (overrides: Record<string, string>) => {
     const p = new URLSearchParams();
@@ -74,9 +76,20 @@ export default async function OrgAuditPage({
           </tbody>
         </table>
       </Card>
-      <div className="mt-4 flex gap-2">
-        {page > 1 && <Link href={`/org/audit?${qs({ page: String(page - 1) })}`} className="text-sm text-indigo-600">← Prev</Link>}
-        <Link href={`/org/audit?${qs({ page: String(page + 1) })}`} className="text-sm text-indigo-600">Next →</Link>
+      <div className="mt-4 flex items-center justify-between">
+        <p className="text-xs text-slate-500">{total.toLocaleString()} total events</p>
+        <div className="flex gap-3">
+          {page > 1 && (
+            <Link href={`/org/audit?${qs({ page: String(page - 1) })}`} className="text-sm text-indigo-600">
+              ← Prev
+            </Link>
+          )}
+          {hasNext && (
+            <Link href={`/org/audit?${qs({ page: String(page + 1) })}`} className="text-sm text-indigo-600">
+              Next →
+            </Link>
+          )}
+        </div>
       </div>
     </section>
   );

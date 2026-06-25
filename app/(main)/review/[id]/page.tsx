@@ -6,6 +6,8 @@ import { DispositionMenu } from "@/components/DispositionMenu";
 import { SplitDialog } from "@/components/SplitDialog";
 import { LoopClosure } from "@/components/LoopClosure";
 import { AiUseNotice } from "@/components/AiUseNotice";
+import { DeleteDocumentButton } from "@/components/DeleteDocumentButton";
+import { AddPatientInline } from "@/components/AddPatientInline";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import {
@@ -21,11 +23,13 @@ export default async function ReviewDetail({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [doc, audit, providers] = await Promise.all([
+  const [doc, audit, providers, pmsStatus] = await Promise.all([
     api.getReview(id),
     api.getAudit(id),
     api.listProviders(),
+    api.pmsConnection().catch(() => ({ connected: false as const })),
   ]);
+  const hasPms = pmsStatus.connected;
   const confirm = confirmAction.bind(null, doc.id);
 
   const extracted = doc.extracted as Record<string, string> | null;
@@ -103,14 +107,27 @@ export default async function ReviewDetail({
         </Card>
 
         <form action={async () => { "use server"; await confirm(doc.matched_patient_id, doc.doc_type, true); }}>
-          <Button type="submit" variant="primary" disabled={!doc.matched_patient_id} className="w-full">
+          <Button type="submit" variant="primary" disabled={!doc.matched_patient_id || !hasPms} className="w-full">
             Confirm &amp; file
           </Button>
         </form>
+        {!hasPms && (
+          <p className="text-xs text-slate-500 -mt-2">
+            Connect a PMS in{" "}
+            <a href="/settings/integrations" className="underline">
+              Settings → Integrations
+            </a>{" "}
+            to file documents.
+          </p>
+        )}
+        {!hasPms && (
+          <DeleteDocumentButton discard={discardAction.bind(null, doc.id)} />
+        )}
 
         <Card padding="p-4" className="space-y-3">
           <p className="text-sm font-semibold text-slate-700">Reassign patient</p>
           <PatientPicker docId={doc.id} docType={doc.doc_type} />
+          {!doc.matched_patient_id && <AddPatientInline docId={doc.id} />}
         </Card>
 
         <Card padding="p-4" className="space-y-3">

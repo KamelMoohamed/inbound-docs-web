@@ -1,7 +1,7 @@
 import "server-only";
 import { ReviewItem, ReviewDetail, Patient, Metrics, OrgUser, FailedDoc,
          BillingSummary, CreditTxn, Channel, HeldDoc, AuditEvent,
-         PmsConnectionStatus, StuckDoc, PmsCatalogEntry,
+         PmsConnectionStatus, StuckDoc, PmsCatalogEntry, Paginated,
          NotificationFeed, Provider, EscalationPolicy, ReportSummary, OrgAuditEntry,
          MeProfile, OnboardingStatus, SsoConfig, AdminTenant, WebhookEndpoint } from "./types";
 import { getSession } from "./auth";
@@ -38,9 +38,16 @@ async function post(path: string, body?: unknown, isFormData = false) {
 }
 
 export const api = {
-  listReview:     async () => ReviewItem.array().parse(await get("/review")),
+  listReview:     async (page = 1, filters: { doc_type?: string; urgency?: string; source?: string } = {}) => {
+    const q = new URLSearchParams({ page: String(page) });
+    if (filters.doc_type) q.set('doc_type', filters.doc_type);
+    if (filters.urgency) q.set('urgency', filters.urgency);
+    if (filters.source) q.set('source', filters.source);
+    return Paginated(ReviewItem).parse(await get(`/review?${q}`));
+  },
+  bulkConfirm:    (ids: string[]) => post('/review/bulk-confirm', { ids }) as Promise<{ succeeded: number; failed: number }>,
   getReview:      async (id: string) => ReviewDetail.parse(await get(`/review/${id}`)),
-  listFailed:     async () => FailedDoc.array().parse(await get("/review/failed")),
+  listFailed:     async (page = 1) => Paginated(FailedDoc).parse(await get(`/review/failed?page=${page}`)),
   searchPatients: async (q: string) => Patient.array().parse(await get(`/patients?q=${encodeURIComponent(q)}`)),
   metrics:        async () => Metrics.parse(await get("/metrics")),
   listOrgUsers:   async () => OrgUser.array().parse(await get("/org/users")),
@@ -55,7 +62,7 @@ export const api = {
   removeUser: async (userId: string) => fetch(`${BASE}/org/users/${userId}`, { method: "DELETE", headers: await authHeaders() }).then(r => r.json()),
   rotateKey: () => post("/org/ingestion-key/rotate"),
   billingSummary: async () => BillingSummary.parse(await get("/billing/summary")),
-  creditTxns:     async () => CreditTxn.array().parse(await get("/billing/transactions")),
+  creditTxns:     async (page = 1) => Paginated(CreditTxn).parse(await get(`/billing/transactions?page=${page}`)),
   checkout:       (plan: string) => post("/billing/checkout", { plan }) as Promise<{ url: string }>,
   portal:         () => post("/billing/portal") as Promise<{ url: string }>,
   listChannels:   async () => Channel.array().parse(await get("/org/channels")),
@@ -75,7 +82,7 @@ export const api = {
                     fetch(`${BASE}/org/channels/${id}`, { method: "PATCH", headers: await authHeaders(), body: JSON.stringify(body) }).then(r => r.json()),
   deleteChannel:  async (id: string) =>
                     fetch(`${BASE}/org/channels/${id}`, { method: "DELETE", headers: await authHeaders() }).then(r => r.json()),
-  listHeld:       async () => HeldDoc.array().parse(await get("/review/held")),
+  listHeld:       async (page = 1) => Paginated(HeldDoc).parse(await get(`/review/held?page=${page}`)),
   changePassword: (currentPassword: string, newPassword: string) =>
                     post("/auth/change-password", { currentPassword, newPassword }),
   raw: async (id: string) => {
@@ -98,7 +105,7 @@ export const api = {
                     fetch(`${BASE}/providers/${id}`, { method: "PATCH", headers: await authHeaders(), body: JSON.stringify(b) }).then(r => r.json()),
   deleteProvider: async (id: string) => fetch(`${BASE}/providers/${id}`, { method: "DELETE", headers: await authHeaders() }).then(r => r.json()),
   assignDoc:      (id: string, b: { provider_id?: string | null; user_id?: string | null }) => post(`/review/${id}/assign`, b),
-  myQueue:        async () => ReviewItem.array().parse(await get("/review?assigned_to=me")),
+  myQueue:        async (page = 1) => Paginated(ReviewItem).parse(await get(`/review?assigned_to=me&page=${page}`)) ,
   escalationPolicy: async () => EscalationPolicy.parse(await get("/escalation-policy")),
   setEscalationPolicy: async (body: Record<string, unknown>) =>
                     fetch(`${BASE}/escalation-policy`, { method: "PUT", headers: await authHeaders(), body: JSON.stringify(body) }).then(r => r.json()),
