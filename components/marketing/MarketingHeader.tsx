@@ -4,9 +4,10 @@ import { Brand } from "@/components/Brand";
 
 const nav = [
   ["/pricing", "Pricing"],
+  ["/customers", "Customers"],
   ["/integrations", "Integrations"],
   ["/security", "Security"],
-  ["/about", "About"],
+  ["/faq", "FAQ"],
   ["/contact", "Contact"],
 ];
 

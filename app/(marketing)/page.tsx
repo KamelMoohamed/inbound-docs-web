@@ -1,7 +1,15 @@
 import { Hero } from "@/components/marketing/Hero";
 import { Section } from "@/components/marketing/Section";
 import { FeatureCard } from "@/components/marketing/FeatureCard";
+import { StatTile } from "@/components/marketing/StatTile";
 import { CTA } from "@/components/marketing/CTA";
+
+const stats: [string, string, string][] = [
+  ["87%", "Auto-ready rate", "docs filed with one click"],
+  ["85%", "Staff time saved", "per week on filing"],
+  ["0", "Documents lost", "since go-live"],
+  ["< 2 min", "Avg. review time", "down from ~15 min"],
+];
 
 const steps = [
   ["1 · Receive", "Documents arrive by fax, email, secure messaging, HL7 or FHIR — into one inbox."],
@@ -33,6 +41,18 @@ export default function LandingPage() {
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {features.map(([t, b]) => <FeatureCard key={t} title={t} body={b} />)}
         </div>
+      </Section>
+      <Section>
+        <h2 className="text-center text-2xl font-bold text-slate-900">What practices see with CliniDoc</h2>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {stats.map(([value, label, sub]) => (
+            <StatTile key={label} value={value} label={label} sub={sub} />
+          ))}
+        </div>
+        <p className="mt-6 text-center text-sm text-slate-500">
+          Illustrative outcomes for a six-GP practice processing ~200 documents a week.{" "}
+          <a href="/customers" className="font-medium text-indigo-600 hover:text-indigo-700">Read the full story →</a>
+        </p>
       </Section>
       <Section className="text-center">
         <h2 className="text-2xl font-bold text-slate-900">Ready to clear the document backlog?</h2>

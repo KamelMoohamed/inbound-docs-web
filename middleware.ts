@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { cookieOptions } from "./lib/cookieOptions";
 
 const PUBLIC = [
-  "/", "/pricing", "/security", "/about", "/contact", "/integrations",
+  "/", "/pricing", "/customers", "/security", "/faq", "/about", "/contact", "/integrations",
   "/privacy", "/terms", "/dpa", "/sub-processors",
   "/login", "/signup", "/forgot-password", "/reset-password", "/invitations",
   "/verify-email", "/goodbye", "/mfa-enroll",

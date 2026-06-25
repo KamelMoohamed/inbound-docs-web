@@ -2,8 +2,8 @@ import Link from "next/link";
 import { Brand } from "@/components/Brand";
 
 const cols: [string, [string, string][]][] = [
-  ["Product", [["/pricing", "Pricing"], ["/integrations", "Integrations"], ["/security", "Security"]]],
-  ["Company", [["/about", "About"], ["/contact", "Contact"]]],
+  ["Product", [["/pricing", "Pricing"], ["/integrations", "Integrations"], ["/customers", "Customers"], ["/security", "Security"]]],
+  ["Company", [["/about", "About"], ["/faq", "FAQ"], ["/contact", "Contact"]]],
   ["Legal", [["/privacy", "Privacy"], ["/terms", "Terms"], ["/dpa", "DPA"], ["/sub-processors", "Sub-processors"]]],
 ];
 
