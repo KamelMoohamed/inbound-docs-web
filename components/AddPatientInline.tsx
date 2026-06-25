@@ -1,7 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import { Button } from "./ui/Button";
-import { api } from "@/lib/api";
+import { addPatientAndMatch } from "@/app/(main)/review/[id]/actions";
 import { useRouter } from "next/navigation";
 
 export function AddPatientInline({ docId }: { docId: string }) {
@@ -23,18 +23,17 @@ export function AddPatientInline({ docId }: { docId: string }) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     startTransition(async () => {
-      try {
-        const patient = await api.createPatient({
-          first_name: String(fd.get("first_name") ?? ""),
-          last_name: String(fd.get("last_name") ?? ""),
-          dob: (fd.get("dob") as string) || null,
-          medicare_number: (fd.get("medicare_number") as string) || null,
-        });
-        await api.updateDoc(docId, { patient_id: patient.id });
+      const result = await addPatientAndMatch(docId, {
+        first_name: String(fd.get("first_name") ?? ""),
+        last_name: String(fd.get("last_name") ?? ""),
+        dob: (fd.get("dob") as string) || null,
+        medicare_number: (fd.get("medicare_number") as string) || null,
+      });
+      if (result.ok) {
         setOpen(false);
         router.refresh();
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to add patient");
+      } else {
+        setError(result.error);
       }
     });
   };

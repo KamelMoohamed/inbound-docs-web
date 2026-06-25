@@ -15,6 +15,20 @@ export async function confirmWithPatient(id: string, patientId: string, docType:
   redirect("/inbox");
 }
 
+export async function addPatientAndMatch(
+  docId: string,
+  patient: { first_name: string; last_name: string; dob: string | null; medicare_number: string | null },
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    const created = await api.createPatient(patient);
+    await api.updateDoc(docId, { patient_id: created.id });
+    revalidatePath(`/review/${docId}`);
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Failed to add patient" };
+  }
+}
+
 export async function changeTypeAction(id: string, formData: FormData) {
   await api.updateDoc(id, { doc_type: String(formData.get("doc_type")) });
   revalidatePath(`/review/${id}`);

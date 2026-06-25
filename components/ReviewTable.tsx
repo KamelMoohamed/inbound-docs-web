@@ -7,7 +7,7 @@ import { Button } from "./ui/Button";
 import { confidenceLevel, bandLabel } from "@/lib/format";
 import { Card } from "./ui/Card";
 import { EmptyState } from "./ui/EmptyState";
-import { api } from "@/lib/api";
+import { bulkConfirmAction } from "@/app/(main)/inbox/actions";
 import { useRouter } from "next/navigation";
 
 function timeAgo(iso: string): string {
@@ -38,7 +38,7 @@ export function ReviewTable({ items }: { items: ReviewItem[] }) {
 
   const bulkConfirm = () => {
     startTransition(async () => {
-      const r = await api.bulkConfirm([...selected]);
+      const r = await bulkConfirmAction([...selected]);
       setResult(r);
       setSelected(new Set());
       router.refresh();
