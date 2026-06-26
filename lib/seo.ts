@@ -33,6 +33,7 @@ export const PUBLIC_ROUTES = [
   "/terms",
   "/dpa",
   "/sub-processors",
+  "/help/cliniko",
 ] as const;
 
 /** Shared mobile-chrome / viewport config for indexable pages. */
