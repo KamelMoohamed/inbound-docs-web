@@ -6,6 +6,10 @@ import { pageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
+const HELP_PATHS: Record<string, string> = {
+  cliniko: "/help/cliniko",
+};
+
 export const metadata = pageMetadata({
   title: "Integrations",
   description: "We work with every clinic. Connected practice software gets documents filed automatically; everyone else can start today in export mode.",
@@ -55,7 +59,7 @@ export default async function IntegrationsPage() {
           <h2 className="text-lg font-semibold text-slate-900">{g.title}</h2>
           <p className="mt-1 text-sm text-slate-600">{g.blurb}</p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            {g.entries.map((e) => <PmsCard key={e.key} entry={e} />)}
+            {g.entries.map((e) => <PmsCard key={e.key} entry={e} helpPath={HELP_PATHS[e.key]} />)}
           </div>
         </section>
       ))}

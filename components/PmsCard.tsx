@@ -8,7 +8,7 @@ function toBadgeTone(t: PmsTone): BadgeTone {
   return t === "green" ? "ok" : t === "amber" ? "warn" : "muted";
 }
 
-export function PmsCard({ entry }: { entry: PmsCatalogEntry }) {
+export function PmsCard({ entry, helpPath }: { entry: PmsCatalogEntry; helpPath?: string }) {
   return (
     <div className="flex flex-col gap-2 rounded-lg border border-slate-200 p-4">
       <div className="flex items-center justify-between gap-2">
@@ -21,7 +21,14 @@ export function PmsCard({ entry }: { entry: PmsCatalogEntry }) {
           {entry.capabilities.map((c) => <li key={c}>{capabilityLabel(c)}</li>)}
         </ul>
       )}
-      <p className="mt-auto text-xs text-slate-400">{entry.segment} · {entry.hosting}</p>
+      <div className="mt-auto flex items-center justify-between">
+        <p className="text-xs text-slate-400">{entry.segment} · {entry.hosting}</p>
+        {helpPath && (
+          <a href={helpPath} className="text-xs font-medium text-indigo-600 hover:text-indigo-700">
+            Setup guide →
+          </a>
+        )}
+      </div>
     </div>
   );
 }

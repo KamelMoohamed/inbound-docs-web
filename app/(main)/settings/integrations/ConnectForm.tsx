@@ -3,6 +3,10 @@ import { useState } from "react";
 
 type Option = { key: string; display_name: string; authKind: "api_key" | "oauth2" };
 
+const HELP_PATHS: Record<string, string> = {
+  cliniko: "/help/cliniko",
+};
+
 export function ConnectForm({ options, connectApiKey, beginOAuth, selected: initial }: {
   options: Option[];
   connectApiKey: (formData: FormData) => void | Promise<void>;
@@ -20,6 +24,8 @@ export function ConnectForm({ options, connectApiKey, beginOAuth, selected: init
     ? 'Enter as "clientId:clientSecret" from your PMS account'
     : undefined;
 
+  const helpPath = HELP_PATHS[selected];
+
   return (
     <div className="flex flex-col gap-3 max-w-md">
       <label className="flex flex-col gap-1 text-sm">Practice software
@@ -27,6 +33,11 @@ export function ConnectForm({ options, connectApiKey, beginOAuth, selected: init
           {options.map((o) => <option key={o.key} value={o.key}>{o.display_name}</option>)}
         </select>
       </label>
+      {helpPath && (
+        <a href={helpPath} target="_blank" rel="noreferrer" className="text-sm text-indigo-600 hover:text-indigo-700">
+          Setup guide for {opt?.display_name} →
+        </a>
+      )}
 
       {opt?.authKind === "api_key" && (
         <form action={connectApiKey} className="flex flex-col gap-2">
